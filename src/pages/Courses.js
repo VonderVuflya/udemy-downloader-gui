@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -64,7 +65,8 @@ const Courses = ({ isLoading }) => {
     console.log(curriculum)
 
     curriculum.forEach(c => {
-      if (c._class == 'chapter') {
+      // eslint-disable-next-line no-underscore-dangle
+      if (c._class === 'chapter') {
         key += 1
         obj = {
           title: c.title,
@@ -180,14 +182,14 @@ const Courses = ({ isLoading }) => {
         <>
           <Paginate pageSize={20} />
 
-          {courses.map(course => (
+          {courses.map(({ id, image_125_H, title }) => (
             <Course
-              downloadInfo={downloads[course.id]}
-              key={course.id}
+              key={id}
+              id={id}
+              image={image_125_H}
+              title={title}
+              downloadInfo={downloads[id]}
               onDownload={handleDownload}
-              id={course.id}
-              image={course.image_125_H}
-              title={course.title}
             />
           ))}
 
