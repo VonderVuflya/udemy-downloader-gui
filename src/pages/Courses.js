@@ -1,45 +1,33 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from 'react'
 
-import {
-  Row,
-  Input,
-  Alert,
-  Result,
-  Modal,
-  Button,
-  Form,
-  Radio,
-  Select,
-  Tree,
-} from "antd"
+import { Row, Input, Result, Modal, Form, Tree } from 'antd'
 
-import Course from "../components/Course"
+import { useDispatch, useSelector } from 'react-redux'
+import fs from 'fs'
+import { remote } from 'electron'
+import Course from '../components/Course'
 
-import Pagination from "../components/Pagination"
+import Pagination from '../components/Pagination'
 
-import { useDispatch, useSelector } from "react-redux"
+import { loadCourses, searchCourses } from '../ducks/courses'
 
-import { loadCourses, searchCourses } from "../ducks/courses"
+import DownloadSettings from '../components/Settings'
+import { downloadCourse } from '../ducks/downloads'
 
-import fs from "fs"
-import { remote } from "electron"
-
-import DownloadSettings from "../components/Settings"
-import { downloadCourse } from "../ducks/downloads"
 const { dialog } = remote
 
 function Courses(props) {
-  const courses = useSelector((state) => state.courses.data)
+  const courses = useSelector(state => state.courses.data)
 
-  const totalCourses = useSelector((state) => state.courses.total)
+  const totalCourses = useSelector(state => state.courses.total)
 
-  const pageNumber = useSelector((state) => state.courses.pageNumber)
+  const pageNumber = useSelector(state => state.courses.pageNumber)
 
-  const search = useSelector((state) => state.courses.search)
+  const search = useSelector(state => state.courses.search)
 
-  const downloads = useSelector((state) => state.downloads)
+  const downloads = useSelector(state => state.downloads)
 
-  const settings = useSelector((state) => state.settings)
+  const settings = useSelector(state => state.settings)
 
   const [courseStateData, setCourseStateData] = useState({})
 
@@ -61,13 +49,13 @@ function Courses(props) {
     }
   }, [])
 
-  const Paginate = (props) => {
+  const Paginate = props => {
     return totalCourses > props.pageSize ? (
       <Pagination
         pageSize={props.pageSize}
         totalCourses={totalCourses}
         pageNumber={pageNumber}
-        onChange={(pageNumber) =>
+        onChange={pageNumber =>
           dispatch(
             search ? searchCourses(search, pageNumber) : loadCourses(pageNumber)
           )
@@ -78,7 +66,7 @@ function Courses(props) {
 
   const selectDownloadPath = () => {
     const path = dialog.showOpenDialogSync({
-      properties: ["openDirectory"],
+      properties: ['openDirectory'],
     })
 
     if (path && path[0]) {
@@ -93,26 +81,24 @@ function Courses(props) {
   }
 
   const updateCheckedFields = (field, checked) => {
-    const enabledSettings = form.getFieldValue("enabledSettings")
+    const enabledSettings = form.getFieldValue('enabledSettings')
     const index = enabledSettings.indexOf(field)
 
     if (checked) {
       if (index === -1) enabledSettings.push(field)
-    } else {
-      if (index !== -1) enabledSettings.splice(index, 1)
-    }
+    } else if (index !== -1) enabledSettings.splice(index, 1)
 
     form.setFieldsValue({ enabledSettings })
   }
 
   const { enabledSettings, lectureOption: downloadPreference } = settings
-  const allSettings = ["download", "lecture", "attachment", "subtitle"]
+  const allSettings = ['download', 'lecture', 'attachment', 'subtitle']
 
   const handleDownload = (course, setLoading) => {
     if (settings.enabledSettings.length < allSettings.length) {
       setCourseStateData({
         course: { ...course },
-        setLoading: setLoading,
+        setLoading,
       })
       setModal(true)
     } else {
@@ -120,7 +106,7 @@ function Courses(props) {
     }
   }
 
-  const handleSubmit = (values) => {
+  const handleSubmit = values => {
     setModal(false)
     dispatch(
       downloadCourse(courseStateData.course, courseStateData.setLoading, {
@@ -145,13 +131,13 @@ function Courses(props) {
 
   useEffect(() => {
     if (!curriculum.length) return
-    let arr = []
+    const arr = []
     let obj = {}
     let key = -1
     console.log(curriculum)
 
-    curriculum.forEach((c) => {
-      if (c._class == "chapter") {
+    curriculum.forEach(c => {
+      if (c._class == 'chapter') {
         key++
         obj = {
           title: c.title,
@@ -169,37 +155,37 @@ function Courses(props) {
     setCurriculumModal(true)
   }, [curriculum])
 
-  const missing = allSettings.filter((s) => {
+  const missing = allSettings.filter(s => {
     return !enabledSettings.includes(s)
   })
 
-  const onCheck = (checkedKeys) => {
-    console.log("onCheck", checkedKeys)
+  const onCheck = checkedKeys => {
+    console.log('onCheck', checkedKeys)
     setCheckedKeys(checkedKeys)
   }
 
   const onSelect = (selectedKeys, info) => {
-    console.log("onSelect", info)
+    console.log('onSelect', info)
     setSelectedKeys(selectedKeys)
   }
   return (
     <>
-      <Row className="p-3">
+      <Row className='p-3'>
         <Input.Search
-          placeholder="Search Courses"
-          size="large"
-          allowClear={true}
+          placeholder='Search Courses'
+          size='large'
+          allowClear
           defaultValue={search}
-          onSearch={(value) => dispatch(searchCourses(value))}
+          onSearch={value => dispatch(searchCourses(value))}
         />
       </Row>
       {modal && (
         <Modal
-          title="Update Settings"
-          visible={true}
+          title='Update Settings'
+          visible
           onCancel={() => setModal(false)}
           footer={[]}
-          destroyOnClose={true}
+          destroyOnClose
         >
           <DownloadSettings
             initialValues={{ ...settings, enabledSettings: [...missing] }}
@@ -213,11 +199,11 @@ function Courses(props) {
 
       {curriculumModal && (
         <Modal
-          title="Download Specific"
-          visible={true}
+          title='Download Specific'
+          visible
           onCancel={() => setCurriculumModal(false)}
           footer={[]}
-          destroyOnClose={true}
+          destroyOnClose
         >
           <Tree
             checkable
@@ -233,7 +219,7 @@ function Courses(props) {
         <>
           <Paginate pageSize={20} />
 
-          {courses.map((course) => (
+          {courses.map(course => (
             <Course
               downloadInfo={downloads[course.id]}
               key={course.id}
@@ -247,11 +233,11 @@ function Courses(props) {
           <Paginate pageSize={20} />
         </>
       ) : !props.isLoading ? (
-        <Row justify="center" className="p-3">
+        <Row justify='center' className='p-3'>
           <Result
-            status="404"
-            title="No Courses Found"
-            subTitle="We could not find any courses in your account"
+            status='404'
+            title='No Courses Found'
+            subTitle='We could not find any courses in your account'
           />
         </Row>
       ) : null}

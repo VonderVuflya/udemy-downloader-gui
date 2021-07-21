@@ -1,5 +1,5 @@
-import { downloadStarted } from "../../ducks/downloads"
-import downloadHandler from "./downloadHandler"
+import { downloadStarted } from '../../ducks/downloads'
+import downloadHandler from './downloadHandler'
 
 export default function initializeDownload(dispatch, getState, courseId) {
   const courseInfo = getState().downloads[courseId]

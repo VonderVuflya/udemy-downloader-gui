@@ -1,23 +1,20 @@
-import { createStore, applyMiddleware } from "redux"
+import { createStore, applyMiddleware } from 'redux'
+import { persistStore, persistReducer, createTransform } from 'redux-persist'
+import createElectronStorage from 'redux-persist-electron-storage'
+import thunk from 'redux-thunk'
 
-import { persistStore, persistReducer, createTransform } from "redux-persist"
+import rootReducer from './rootReducer'
 
-import createElectronStorage from "redux-persist-electron-storage"
-
-import thunk from "redux-thunk"
-
-import rootReducer from "./rootReducer"
-
-const ElectronStore = require("electron-store")
+const ElectronStore = require('electron-store')
 
 const electronStore = new ElectronStore()
 
 const transform = createTransform(
   // transform state on its way to being serialized and persisted.
   (inboundState, key) => {
-    //console.log(inboundState);
+    // console.log(inboundState);
     const downloads = JSON.parse(JSON.stringify(inboundState))
-    for (var courseid in downloads) {
+    for (const courseid in downloads) {
       downloads[courseid].downloadInstance = null
       downloads[courseid].status = null
     }
@@ -26,22 +23,22 @@ const transform = createTransform(
   (outboundState, key) => {
     return outboundState
   },
-  { whitelist: ["downloads"] }
+  { whitelist: ['downloads'] }
 )
 
 const persistConfig = {
-  key: "root",
+  key: 'root',
   storage: createElectronStorage(electronStore),
-  blacklist: ["courses", "dashboard"],
+  blacklist: ['courses', 'dashboard'],
   transforms: [transform],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
-let store = createStore(persistedReducer, applyMiddleware(thunk))
+const store = createStore(persistedReducer, applyMiddleware(thunk))
 
-let persistor = persistStore(store)
+const persistor = persistStore(store)
 
-//persistor.purge()
+// persistor.purge()
 
 export { store, persistor }

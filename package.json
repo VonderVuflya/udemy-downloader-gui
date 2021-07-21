@@ -8,9 +8,11 @@
     "build": "react-app-rewired build",
     "start": "electron .",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --fix --ext .jsx,.js src/"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",

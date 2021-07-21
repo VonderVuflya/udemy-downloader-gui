@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from 'axios'
 
 const urlFetcher = {
   asset: (getState, courseId, itemId, lectureId) => {
@@ -7,7 +7,7 @@ const urlFetcher = {
         `https://www.udemy.com/api-2.0/users/me/subscribed-courses/${courseId}/lectures/${lectureId}/supplementary-assets/${itemId}?fields[asset]=download_urls,external_url,asset_type,filename`,
         { headers: { Authorization: `Bearer ${getState().user.accessToken}` } }
       )
-      .then((res) => res.data)
+      .then(res => res.data)
   },
   lecture: (getState, courseId, lectureId) => {
     return axios
@@ -19,7 +19,7 @@ const urlFetcher = {
           },
         }
       )
-      .then((res) => res.data)
+      .then(res => res.data)
   },
   caption: (getState, courseId, lectureId) => {
     return axios
@@ -31,7 +31,7 @@ const urlFetcher = {
           },
         }
       )
-      .then((res) => res.data.asset)
+      .then(res => res.data.asset)
   },
 }
 

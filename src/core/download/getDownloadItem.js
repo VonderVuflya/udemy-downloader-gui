@@ -5,7 +5,7 @@ export default function getDownloadItem(course) {
 
   let count = 0
 
-  for (let item of curriculum) {
+  for (const item of curriculum) {
     count++
 
     if (count === target) {
@@ -18,7 +18,7 @@ export default function getDownloadItem(course) {
     }
 
     if (item.supplementary_assets) {
-      for (let suppItem of item.supplementary_assets) {
+      for (const suppItem of item.supplementary_assets) {
         count++
         if (count === target) {
           return { ...suppItem, lectureId: item.id }

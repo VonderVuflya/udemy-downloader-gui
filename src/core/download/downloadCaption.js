@@ -1,4 +1,4 @@
-import download from "./download"
+import download from './download'
 import {
   fileDownloadFinished,
   FILE_DOWNLOAD_FINISHED,
@@ -6,9 +6,9 @@ import {
   updateFileData,
   UPDATE_COURSE_VISITED_FILES,
   UPDATE_FILE_TYPE,
-} from "../../ducks/downloads"
-import downloadHandler from "./downloadHandler"
-import urlFetcher from "./urlFetcher"
+} from '../../ducks/downloads'
+import downloadHandler from './downloadHandler'
+import urlFetcher from './urlFetcher'
 
 export default async function downloadCaption(
   item,
@@ -28,10 +28,10 @@ export default async function downloadCaption(
 
   if (response) {
     console.log(response)
-    const found = response.captions.find((caption) => caption.id === item.id)
+    const found = response.captions.find(caption => caption.id === item.id)
     // console.log(course.chapter)
 
-    const lastIndex = response.filename.lastIndexOf(".")
+    const lastIndex = response.filename.lastIndexOf('.')
     const fileName = `${course.chapterNumber}.${
       course.lectureNumber
     } ${response.filename.slice(0, lastIndex)}.vtt`
@@ -44,14 +44,14 @@ export default async function downloadCaption(
     dispatch({
       type: UPDATE_FILE_TYPE,
       courseid: course.id,
-      fileType: "Subtitle",
+      fileType: 'Subtitle',
       dlFileName: `${response.filename.slice(0, lastIndex)}.srt`,
     })
 
     dispatch(
       updateFileData(
         course.id,
-        "Subtitle",
+        'Subtitle',
         `${response.filename.slice(0, lastIndex)}.srt`
       )
     )

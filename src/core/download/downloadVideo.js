@@ -7,19 +7,19 @@ import {
   UPDATE_FILE_TYPE,
   UPDATE_LECTURE_NUMBER,
   UPDATE_VIDEO_QUALITY,
-} from "../../ducks/downloads"
-import download from "./download"
-import downloadHandler from "./downloadHandler"
-import urlFetcher from "./urlFetcher"
+} from '../../ducks/downloads'
+import download from './download'
+import downloadHandler from './downloadHandler'
+import urlFetcher from './urlFetcher'
 
 function getVideoItemByQuality(videosResponse, course) {
   let matched = videosResponse.find(
-    (video) => video.label == course.settings.lectureQuality
+    video => video.label == course.settings.lectureQuality
   )
 
   if (!matched) {
     const videos = videosResponse
-      .filter((video) => video.label != "Auto")
+      .filter(video => video.label != 'Auto')
       .reverse()
 
     for (let i = 0; i < videos.length; i++) {
@@ -75,13 +75,13 @@ export default async function downloadVideo(
     //   courseid: course.id,
     //   videoQuality: video.label,
     // })
-    
-    dispatch(updateFileData(course.id, "Video", filename, video.label))
+
+    dispatch(updateFileData(course.id, 'Video', filename, video.label))
 
     return download(downloadLink, fn, path, dispatch, getState, courseId)
 
-    //console.log(fn)
-    //dispatch(fileDownloadFinished(course.id))
+    // console.log(fn)
+    // dispatch(fileDownloadFinished(course.id))
     // dispatch({
     //   type: FILE_DOWNLOAD_FINISHED,
     //   courseid: courseId,

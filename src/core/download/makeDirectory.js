@@ -1,9 +1,10 @@
-import mkdirp from "mkdirp"
+import mkdirp from 'mkdirp'
 import {
   UPDATE_COURSE_VISITED_FILES,
   NEW_CHAPTER_STARTED,
-} from "../../ducks/downloads"
-import downloadHandler from "./downloadHandler"
+} from '../../ducks/downloads'
+import downloadHandler from './downloadHandler'
+
 export default function makeDirectory(getState, dispatch, course, chapterName) {
   const { visitedFiles } = course
   const directory = `${course.parentPath}/${chapterName}`
@@ -12,7 +13,7 @@ export default function makeDirectory(getState, dispatch, course, chapterName) {
     chapter: chapterName,
     courseid: course.id,
   })
-  return mkdirp(directory).then((res) => {
+  return mkdirp(directory).then(res => {
     dispatch({
       type: UPDATE_COURSE_VISITED_FILES,
       courseid: course.id,

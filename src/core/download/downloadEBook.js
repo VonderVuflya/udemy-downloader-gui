@@ -6,20 +6,20 @@ import {
   UPDATE_COURSE_VISITED_FILES,
   UPDATE_FILE_TYPE,
   UPDATE_LECTURE_NUMBER,
-} from "../../ducks/downloads"
-import download from "./download"
-import downloadHandler from "./downloadHandler"
-import urlFetcher from "./urlFetcher"
+} from '../../ducks/downloads'
+import download from './download'
+import downloadHandler from './downloadHandler'
+import urlFetcher from './urlFetcher'
 
 function getDownloadLink(response, isLecture) {
   if (isLecture) {
     return {
-      downloadLink: response.asset.download_urls["E-Book"][0].file,
+      downloadLink: response.asset.download_urls['E-Book'][0].file,
       fileName: response.asset.filename,
     }
   }
   return {
-    downloadLink: response.download_urls["E-Book"][0].file,
+    downloadLink: response.download_urls['E-Book'][0].file,
     fileName: response.filename,
   }
 }
@@ -46,11 +46,12 @@ export default async function downloadEBook(
   }
 
   if (response) {
-    let downloadLink, fileName
+    let downloadLink
+    let fileName
     const path = `${course.parentPath}/${course.chapter}`
 
     let downloadObject = getDownloadLink(response, isLecture)
-    //why undefined
+    // why undefined
 
     // dispatch({
     //   type: UPDATE_FILE_TYPE,
@@ -59,7 +60,7 @@ export default async function downloadEBook(
     //   dlFileName: downloadObject.fileName,
     // })
 
-    dispatch(updateFileData(course.id, "E-Book", downloadObject.fileName))
+    dispatch(updateFileData(course.id, 'E-Book', downloadObject.fileName))
 
     downloadObject = {
       ...downloadObject,

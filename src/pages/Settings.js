@@ -1,29 +1,17 @@
-import React from "react"
-import DownloadSettings from "../components/Settings"
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Card, Form } from 'antd'
+import fs from 'fs'
+import { remote } from 'electron'
+import { SettingOutlined } from '@ant-design/icons'
 
-import { useSelector, useDispatch } from "react-redux"
-
-import { Card, Button, Switch, Alert, Form, Radio, Select, Empty } from "antd"
-
-import { resetSettings, saveSettings } from "../ducks/settings"
-
-import fs from "fs"
-
-import { remote } from "electron"
-
-import {
-  SettingOutlined,
-  FolderOutlined,
-  PlaySquareOutlined,
-  FileZipOutlined,
-  ContainerOutlined,
-  FolderOpenOutlined,
-} from "@ant-design/icons"
+import { saveSettings } from '../ducks/settings'
+import DownloadSettings from '../components/Settings'
 
 const { dialog } = remote
 
 function Settings() {
-  const settings = useSelector((store) => store.settings)
+  const settings = useSelector(store => store.settings)
 
   const [form] = Form.useForm()
 
@@ -31,7 +19,7 @@ function Settings() {
 
   const selectDownloadPath = () => {
     const path = dialog.showOpenDialogSync({
-      properties: ["openDirectory"],
+      properties: ['openDirectory'],
     })
 
     if (path && path[0]) {
@@ -46,26 +34,24 @@ function Settings() {
   }
 
   const updateCheckedFields = (field, checked) => {
-    const enabledSettings = form.getFieldValue("enabledSettings")
+    const enabledSettings = form.getFieldValue('enabledSettings')
     const index = enabledSettings.indexOf(field)
 
     if (checked) {
       if (index === -1) enabledSettings.push(field)
-    } else {
-      if (index !== -1) enabledSettings.splice(index, 1)
-    }
+    } else if (index !== -1) enabledSettings.splice(index, 1)
 
     form.setFieldsValue({ enabledSettings })
   }
 
-  const handleSubmit = (settings) => {
+  const handleSubmit = settings => {
     dispatch(saveSettings(settings))
   }
 
   return (
     <Card
-      bodyStyle={{ padding: "10px" }}
-      title="Settings"
+      bodyStyle={{ padding: '10px' }}
+      title='Settings'
       extra={<SettingOutlined />}
     >
       <DownloadSettings

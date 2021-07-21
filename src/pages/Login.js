@@ -1,33 +1,28 @@
-import React from "react"
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Form } from 'antd'
+import { Redirect } from 'react-router-dom'
 
-import LoginForm from "../components/LoginForm"
+import { remote } from 'electron'
+import { login } from '../ducks/user'
+import LoginForm from '../components/LoginForm'
 
-import { login } from "../ducks/user"
-
-import { useSelector, useDispatch } from "react-redux"
-
-import { Form } from "antd"
-
-import { Redirect } from "react-router-dom"
-
-import { remote } from "electron"
-
-import "./Login.css"
+import './Login.css'
 
 const { BrowserWindow, getCurrentWindow, session } = remote
 
 const parent = getCurrentWindow()
 
-const dimensions = parent.getSize()
+// const dimensions = parent.getSize()
 
 function LoginPage() {
-  const accessToken = useSelector((state) => state.user.accessToken)
+  const accessToken = useSelector(state => state.user.accessToken)
 
   const dispatch = useDispatch()
 
   const [form] = Form.useForm()
 
-  const onSubmit = (values) => {
+  const onSubmit = values => {
     const loginWindow = new BrowserWindow({
       width: 1360,
       height: 720,
@@ -44,12 +39,12 @@ function LoginPage() {
     )
 
     session.defaultSession.webRequest.onBeforeSendHeaders(
-      { urls: ["*://*.udemy.com/*"] },
+      { urls: ['*://*.udemy.com/*'] },
       (request, callback) => {
         if (request.requestHeaders.Authorization) {
           loginWindow.destroy()
           session.defaultSession.clearStorageData()
-          dispatch(login(request.requestHeaders.Authorization.split(" ")[1]))
+          dispatch(login(request.requestHeaders.Authorization.split(' ')[1]))
         }
         callback({ requestHeaders: request.requestHeaders })
       }
@@ -57,7 +52,7 @@ function LoginPage() {
   }
 
   return accessToken ? (
-    <Redirect to="/dashboard/courses" />
+    <Redirect to='/dashboard/courses' />
   ) : (
     <LoginForm form={form} onSubmit={onSubmit} />
   )

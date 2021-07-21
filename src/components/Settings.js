@@ -1,21 +1,18 @@
-import React from "react"
-import { Card, Button, Switch, Alert, Form, Radio, Select, Empty } from "antd"
-import fs from "fs"
-
-import { remote } from "electron"
-
+import React from 'react'
+import { Card, Button, Switch, Alert, Form, Radio, Select, Empty } from 'antd'
+import fs from 'fs'
+import { remote } from 'electron'
 import {
-  SettingOutlined,
   FolderOutlined,
   PlaySquareOutlined,
   FileZipOutlined,
   ContainerOutlined,
   FolderOpenOutlined,
-} from "@ant-design/icons"
+} from '@ant-design/icons'
 
 const { dialog } = remote
 
-const Settings = (props) => {
+const Settings = props => {
   const {
     form,
     onSelectDownloadPath: selectDownloadPath,
@@ -25,60 +22,60 @@ const Settings = (props) => {
   return (
     <>
       <Form
-        layout="vertical"
+        layout='vertical'
         form={props.form}
-        name="settings"
+        name='settings'
         preserve={false}
         initialValues={props.initialValues}
-        onFinish={(values) =>
+        onFinish={values =>
           props.onSubmit({ ...props.initialValues, ...values })
         }
       >
         <Form.Item shouldUpdate>
           {() => {
-            const enabledSettings = form.getFieldValue("enabledSettings")
+            const enabledSettings = form.getFieldValue('enabledSettings')
             return (
               <>
-                <Form.Item name="enabledSettings" noStyle />
+                <Form.Item name='enabledSettings' noStyle />
 
-                {settingsForm || enabledSettings.includes("download") ? (
+                {settingsForm || enabledSettings.includes('download') ? (
                   <Card
-                    className="border-b-0 rounded-none"
-                    type="inner"
+                    className='border-b-0 rounded-none'
+                    type='inner'
                     title={
                       <>
                         {settingsForm && (
                           <Switch
-                            className="mr-2"
-                            size="small"
-                            onChange={(checked) =>
-                              updateCheckedFields("download", checked)
+                            className='mr-2'
+                            size='small'
+                            onChange={checked =>
+                              updateCheckedFields('download', checked)
                             }
                             defaultChecked={enabledSettings.includes(
-                              "download"
+                              'download'
                             )}
                           />
                         )}
                         Download Path
                       </>
                     }
-                    size="small"
+                    size='small'
                     extra={<FolderOutlined />}
                   >
-                    {enabledSettings.includes("download") ? (
+                    {enabledSettings.includes('download') ? (
                       <>
                         <Button
                           onClick={selectDownloadPath}
-                          className="w-full h-10"
-                          type="dashed"
+                          className='w-full h-10'
+                          type='dashed'
                         >
                           <FolderOpenOutlined /> Select Location
                         </Button>
 
-                        <Form.Item name="downloadPath" noStyle>
+                        <Form.Item name='downloadPath' noStyle>
                           <Alert
-                            className="bg-gray-200 bg-opacity-75 mt-3 border-0"
-                            message={form.getFieldValue("downloadPath")}
+                            className='bg-gray-200 bg-opacity-75 mt-3 border-0'
+                            message={form.getFieldValue('downloadPath')}
                           />
                         </Form.Item>
                       </>
@@ -87,58 +84,58 @@ const Settings = (props) => {
                         imageStyle={{
                           height: 80,
                         }}
-                        description="Select at start of download"
+                        description='Select at start of download'
                       />
                     ) : null}
                   </Card>
                 ) : null}
 
-                {settingsForm || enabledSettings.includes("lecture") ? (
+                {settingsForm || enabledSettings.includes('lecture') ? (
                   <Card
-                    className="border-b-0 rounded-none"
-                    type="inner"
+                    className='border-b-0 rounded-none'
+                    type='inner'
                     title={
                       <>
                         {settingsForm && (
                           <Switch
-                            className="mr-2"
-                            size="small"
-                            onChange={(checked) =>
-                              updateCheckedFields("lecture", checked)
+                            className='mr-2'
+                            size='small'
+                            onChange={checked =>
+                              updateCheckedFields('lecture', checked)
                             }
-                            defaultChecked={enabledSettings.includes("lecture")}
+                            defaultChecked={enabledSettings.includes('lecture')}
                           />
                         )}
                         Lecture
                       </>
                     }
-                    size="small"
+                    size='small'
                     extra={<PlaySquareOutlined />}
                   >
-                    {enabledSettings.includes("lecture") ? (
+                    {enabledSettings.includes('lecture') ? (
                       <>
-                        <Form.Item className="mb-3" name="lectureOption">
+                        <Form.Item className='mb-3' name='lectureOption'>
                           <Radio.Group>
-                            <Radio value="downloadAll" className="mb-2 block">
+                            <Radio value='downloadAll' className='mb-2 block'>
                               Download All Lectures
                             </Radio>
-                            <Radio value="downloadSpecific">
+                            <Radio value='downloadSpecific'>
                               Download Specific Lectures
                             </Radio>
                           </Radio.Group>
                         </Form.Item>
 
-                        <Form.Item noStyle name="lectureQuality">
+                        <Form.Item noStyle name='lectureQuality'>
                           <Select
-                            placeholder="Preferred Video Quality"
-                            className="w-full"
+                            placeholder='Preferred Video Quality'
+                            className='w-full'
                           >
-                            <Select.Option value="1080">1080p</Select.Option>
-                            <Select.Option value="720">720p</Select.Option>
-                            <Select.Option value="480">480p</Select.Option>
-                            <Select.Option value="360">360p</Select.Option>
-                            <Select.Option value="270">270p</Select.Option>
-                            <Select.Option value="144">144p</Select.Option>
+                            <Select.Option value='1080'>1080p</Select.Option>
+                            <Select.Option value='720'>720p</Select.Option>
+                            <Select.Option value='480'>480p</Select.Option>
+                            <Select.Option value='360'>360p</Select.Option>
+                            <Select.Option value='270'>270p</Select.Option>
+                            <Select.Option value='144'>144p</Select.Option>
                           </Select>
                         </Form.Item>
                       </>
@@ -147,67 +144,67 @@ const Settings = (props) => {
                         imageStyle={{
                           height: 80,
                         }}
-                        description="Select at start of download"
+                        description='Select at start of download'
                       />
                     ) : null}
                   </Card>
                 ) : null}
-                {settingsForm || enabledSettings.includes("attachment") ? (
+                {settingsForm || enabledSettings.includes('attachment') ? (
                   <Card
-                    className="rounded-none"
-                    type="inner"
+                    className='rounded-none'
+                    type='inner'
                     title={
                       <>
                         {settingsForm && (
                           <Switch
-                            className="mr-2"
-                            size="small"
-                            onChange={(checked) =>
-                              updateCheckedFields("attachment", checked)
+                            className='mr-2'
+                            size='small'
+                            onChange={checked =>
+                              updateCheckedFields('attachment', checked)
                             }
                             defaultChecked={enabledSettings.includes(
-                              "attachment"
+                              'attachment'
                             )}
                           />
                         )}
                         Attachments
                       </>
                     }
-                    size="small"
+                    size='small'
                     extra={<FileZipOutlined />}
                   >
-                    {enabledSettings.includes("attachment") ? (
+                    {enabledSettings.includes('attachment') ? (
                       <>
-                        <Form.Item noStyle name="attachmentOption">
+                        <Form.Item noStyle name='attachmentOption'>
                           <Radio.Group>
-                            <Radio value="downloadAll" className="mb-2 block">
+                            <Radio value='downloadAll' className='mb-2 block'>
                               Download All Attachments
                             </Radio>
-                            <Radio value="dontDownload" className="mb-2 block">
+                            <Radio value='dontDownload' className='mb-2 block'>
                               Don't Download Attachments
                             </Radio>
-                            <Radio value="downloadSpecific" className="block">
+                            <Radio value='downloadSpecific' className='block'>
                               Download Specific Attachments
                             </Radio>
                           </Radio.Group>
                         </Form.Item>
 
-                        {form.getFieldValue("attachmentOption") ===
-                        "downloadSpecific" ? (
+                        {form.getFieldValue('attachmentOption') ===
+                        'downloadSpecific' ? (
                           <Form.Item
-                            className="mt-3 mb-0"
-                            name="allowedAttachments"
+                            className='mt-3 mb-0'
+                            name='allowedAttachments'
                           >
                             <Select
-                              mode="multiple"
-                              placeholder="Select Attachment Types"
-                              className="w-full"
+                              mode='multiple'
+                              placeholder='Select Attachment Types'
+                              className='w-full'
                             >
-                              <Select.Option value="File">File</Select.Option>
-                              <Select.Option value="Article">
+                              <Select.Option value='File'>File</Select.Option>
+                              <Select.Option value='Article'>
                                 Article
                               </Select.Option>
-                              <Select.Option value="E-Book">
+                              <Select.Option value='E-Book'>
                                 E-Book
                               </Select.Option>
                             </Select>
@@ -219,127 +216,127 @@ const Settings = (props) => {
                         imageStyle={{
                           height: 80,
                         }}
-                        description="Select at start of download"
+                        description='Select at start of download'
                       />
                     ) : null}
                   </Card>
                 ) : null}
-                {settingsForm && enabledSettings.includes("subtitle") ? (
+                {settingsForm && enabledSettings.includes('subtitle') ? (
                   <Card
-                    className="rounded-none"
-                    type="inner"
+                    className='rounded-none'
+                    type='inner'
                     title={
                       <>
                         {settingsForm && (
                           <Switch
-                            className="mr-2"
-                            size="small"
-                            onChange={(checked) =>
-                              updateCheckedFields("subtitle", checked)
+                            className='mr-2'
+                            size='small'
+                            onChange={checked =>
+                              updateCheckedFields('subtitle', checked)
                             }
                             defaultChecked={enabledSettings.includes(
-                              "subtitle"
+                              'subtitle'
                             )}
                           />
                         )}
                         Subtitles
                       </>
                     }
-                    size="small"
+                    size='small'
                     extra={<ContainerOutlined />}
                   >
-                    {enabledSettings.includes("subtitle") ? (
+                    {enabledSettings.includes('subtitle') ? (
                       <>
-                        <Form.Item noStyle name="subtitleOption">
+                        <Form.Item noStyle name='subtitleOption'>
                           <Radio.Group>
-                            <Radio value="dontDownload" className="mb-2 block">
+                            <Radio value='dontDownload' className='mb-2 block'>
                               Don't Download Subtitles
                             </Radio>
-                            <Radio value="download" className="block">
+                            <Radio value='download' className='block'>
                               Download Subtitles
                             </Radio>
                           </Radio.Group>
                         </Form.Item>
 
-                        {form.getFieldValue("subtitleOption") === "download" ? (
+                        {form.getFieldValue('subtitleOption') === 'download' ? (
                           <Form.Item
-                            className="mt-3 mb-0"
-                            name="subtitleLanguage"
+                            className='mt-3 mb-0'
+                            name='subtitleLanguage'
                           >
                             <Select
                               showSearch
-                              placeholder="Choose Subtitle Language"
-                              className="w-full"
+                              placeholder='Choose Subtitle Language'
+                              className='w-full'
                             >
-                              <Select.Option value="English">
+                              <Select.Option value='English'>
                                 English
                               </Select.Option>
-                              <Select.Option value="Norwegian">
+                              <Select.Option value='Norwegian'>
                                 Norwegian
                               </Select.Option>
-                              <Select.Option value="Turkish">
+                              <Select.Option value='Turkish'>
                                 Turkish
                               </Select.Option>
-                              <Select.Option value="Traditional Chinese">
+                              <Select.Option value='Traditional Chinese'>
                                 Traditional Chinese
                               </Select.Option>
-                              <Select.Option value="Swedish">
+                              <Select.Option value='Swedish'>
                                 Swedish
                               </Select.Option>
-                              <Select.Option value="Russian">
+                              <Select.Option value='Russian'>
                                 Russian
                               </Select.Option>
-                              <Select.Option value="Polish">
+                              <Select.Option value='Polish'>
                                 Polish
                               </Select.Option>
-                              <Select.Option value="Persian">
+                              <Select.Option value='Persian'>
                                 Persian
                               </Select.Option>
-                              <Select.Option value="Malay">Malay</Select.Option>
-                              <Select.Option value="Korean">
+                              <Select.Option value='Malay'>Malay</Select.Option>
+                              <Select.Option value='Korean'>
                                 Korean
                               </Select.Option>
-                              <Select.Option value="Japanese">
+                              <Select.Option value='Japanese'>
                                 Japanese
                               </Select.Option>
-                              <Select.Option value="Italian">
+                              <Select.Option value='Italian'>
                                 Italian
                               </Select.Option>
-                              <Select.Option value="Indonesian">
+                              <Select.Option value='Indonesian'>
                                 Indonesian
                               </Select.Option>
-                              <Select.Option value="Hindi">Hindi</Select.Option>
-                              <Select.Option value="Hebrew">
+                              <Select.Option value='Hindi'>Hindi</Select.Option>
+                              <Select.Option value='Hebrew'>
                                 Hebrew
                               </Select.Option>
-                              <Select.Option value="Finnish">
+                              <Select.Option value='Finnish'>
                                 Finnish
                               </Select.Option>
-                              <Select.Option value="Dutch">Dutch</Select.Option>
-                              <Select.Option value="Danish">
+                              <Select.Option value='Dutch'>Dutch</Select.Option>
+                              <Select.Option value='Danish'>
                                 Danish
                               </Select.Option>
-                              <Select.Option value="Czech">Czech</Select.Option>
-                              <Select.Option value="Spanish">
+                              <Select.Option value='Czech'>Czech</Select.Option>
+                              <Select.Option value='Spanish'>
                                 Spanish
                               </Select.Option>
-                              <Select.Option value="Simplified Chinese">
+                              <Select.Option value='Simplified Chinese'>
                                 Simplified Chinese
                               </Select.Option>
-                              <Select.Option value="Portuguese">
+                              <Select.Option value='Portuguese'>
                                 Portuguese
                               </Select.Option>
-                              <Select.Option value="German">
+                              <Select.Option value='German'>
                                 German
                               </Select.Option>
-                              <Select.Option value="French">
+                              <Select.Option value='French'>
                                 French
                               </Select.Option>
-                              <Select.Option value="Arabic">
+                              <Select.Option value='Arabic'>
                                 Arabic
                               </Select.Option>
-                              <Select.Option value="Thai">Thai</Select.Option>
-                              <Select.Option value="Romanian">
+                              <Select.Option value='Thai'>Thai</Select.Option>
+                              <Select.Option value='Romanian'>
                                 Romanian
                               </Select.Option>
                             </Select>
@@ -351,7 +348,7 @@ const Settings = (props) => {
                         imageStyle={{
                           height: 80,
                         }}
-                        description="Select at start of download"
+                        description='Select at start of download'
                       />
                     ) : null}
                   </Card>
@@ -359,10 +356,10 @@ const Settings = (props) => {
 
                 <Form.Item noStyle shouldUpdate>
                   <Button
-                    type="primary"
-                    shape="round"
-                    className="h-10 mt-4 tracking-wide"
-                    htmlType="submit"
+                    type='primary'
+                    shape='round'
+                    className='h-10 mt-4 tracking-wide'
+                    htmlType='submit'
                     block
                   >
                     Save Settings

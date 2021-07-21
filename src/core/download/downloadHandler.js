@@ -1,9 +1,9 @@
-import initializeDownload from "./initializeDownload"
-import handleItem from "./handleItem"
+import initializeDownload from './initializeDownload'
+import handleItem from './handleItem'
 import {
   courseDownloadFinished,
   updateDownloaderStatus,
-} from "../../ducks/downloads"
+} from '../../ducks/downloads'
 
 export default function downloadHandler(dispatch, getState, courseId) {
   try {
@@ -13,7 +13,7 @@ export default function downloadHandler(dispatch, getState, courseId) {
 
     if (courseInfo.downloaded == courseInfo.total) {
       // dispatch(courseDownloadFinished(courseId))
-      dispatch(updateDownloaderStatus(courseId, "finished"))
+      dispatch(updateDownloaderStatus(courseId, 'finished'))
     }
 
     if (!hasStarted) {
@@ -22,7 +22,5 @@ export default function downloadHandler(dispatch, getState, courseId) {
 
     console.log(getState().downloads[courseId])
     handleItem(getState, dispatch, courseInfo)
-  } catch (e) {
-    return
-  }
+  } catch (e) {}
 }

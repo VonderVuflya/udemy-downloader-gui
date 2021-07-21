@@ -1,83 +1,69 @@
-import React, { useState } from 'react';
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Redirect, Route } from 'react-router-dom'
+import { Layout, Modal, Spin } from 'antd'
+import { LoadingOutlined } from '@ant-design/icons'
 
-import { useSelector, useDispatch } from 'react-redux';
+import Courses from './Courses'
+import Downloads from './Downloads'
+import Settings from './Settings'
 
-import { logout } from '../ducks/user';
+import { logout } from '../ducks/user'
+import Navigation from '../components/Navigation'
 
-import { Redirect, Route } from 'react-router-dom';
-
-import Navigation from '../components/Navigation';
-
-import Courses from './Courses';
-
-import Downloads from './Downloads';
-
-import Settings from './Settings';
-
-import { Layout, Modal, Spin } from 'antd';
-
-import { LoadingOutlined } from '@ant-design/icons';
-
-const { Content } = Layout;
-
+const { Content } = Layout
 
 function Dashboard() {
+  const accessToken = useSelector(state => state.user.accessToken)
+  const isLoading = useSelector(state => state.dashboard.isLoading)
 
-    const accessToken = useSelector(state => state.user.accessToken);
+  const [modal, contextHolder] = Modal.useModal()
 
-    const isLoading = useSelector(state => state.dashboard.isLoading);
+  const dispatch = useDispatch()
 
-    const [modal, contextHolder] = Modal.useModal();
+  const handleLogout = () => {
+    modal.confirm({
+      title: 'Confirm Logout',
+      content: 'Are you sure ?',
+      okText: 'Yes',
+      onOk: () => {
+        dispatch(logout())
+      },
+    })
+  }
 
-    const dispatch = useDispatch();
+  return accessToken ? (
+    <Layout>
+      {isLoading ? (
+        <Spin
+          indicator={<LoadingOutlined />}
+          size='large'
+          className='fixed w-full h-full z-50 flex items-center justify-center bg-white bg-opacity-50'
+        />
+      ) : null}
 
-    const handleLogout = () => {
-        modal.confirm({
-            title: 'Confirm Logout',
-            content: 'Are you sure ?',
-            okText: "Yes",
-            onOk: () => {
-                dispatch(logout());
-            }
-        });
-    }
+      {contextHolder}
 
-    return (
-        accessToken ?
-            <Layout>
-                {
-                    isLoading ? <Spin indicator={<LoadingOutlined />} size="large" className="fixed w-full h-full z-50 flex items-center justify-center bg-white bg-opacity-50" /> : null
-                }
+      <Navigation handleLogout={handleLogout} />
 
-                {contextHolder}
+      <Content className='bg-white'>
+        <Route path='/dashboard/courses'>
+          {/* <Settings /> */}
+          <Courses isLoading={isLoading} />
+        </Route>
 
-                <Navigation
-                    handleLogout={handleLogout}
-                />
+        <Route path='/dashboard/downloads'>
+          <Downloads />
+        </Route>
 
-
-                <Content className="bg-white">
-
-                    <Route path="/dashboard/courses">
-                        {/* <Settings /> */}
-                        <Courses isLoading={isLoading} />
-                    </Route>
-
-                    <Route path="/dashboard/downloads">
-                        <Downloads />
-                    </Route>
-
-                    <Route path="/dashboard/settings">
-                        <Settings />
-                    </Route>
-
-                </Content>
-
-
-            </Layout > : <Redirect to="/login" />
-    )
-
+        <Route path='/dashboard/settings'>
+          <Settings />
+        </Route>
+      </Content>
+    </Layout>
+  ) : (
+    <Redirect to='/login' />
+  )
 }
 
-
-export default Dashboard;
+export default Dashboard

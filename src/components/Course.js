@@ -1,48 +1,38 @@
-import React, { useState } from "react"
-
-import {
-  downloadCourse,
-  pauseDownload,
-  resumeDownload,
-  deleteDownload,
-} from "../ducks/downloads"
-
-import { useDispatch } from "react-redux"
-
-import classNames from "classnames"
-
-import { Card, Row, Col, Button, Progress } from "antd"
-
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import classNames from 'classnames'
+import { Card, Row, Col, Button, Progress } from 'antd'
 import {
   CloudDownloadOutlined,
   PauseOutlined,
   CaretRightOutlined,
-} from "@ant-design/icons"
+} from '@ant-design/icons'
+
+import {
+  pauseDownload,
+  resumeDownload,
+  deleteDownload,
+} from '../ducks/downloads'
 
 function Course(props) {
   const [isLoading, setLoading] = useState(false)
   const dispatch = useDispatch()
 
-
   const isPauseDisabled = () => {
-
-    if(props.downloadInfo){
-        if(props.downloadInfo.status==="downloading"){
-          return false;
-        }
-        return true;
+    if (props.downloadInfo) {
+      if (props.downloadInfo.status === 'downloading') {
+        return false
+      }
+      return true
     }
 
-    return true;
-
-
+    return true
 
     // if (props.downloadInfo) {
 
     //   if(props.downloadInfo.status === "waiting"){
     //     return true;
     //   }
-  
 
     //   if (props.downloadInfo.downloadInstance) {
     //     if (
@@ -57,34 +47,25 @@ function Course(props) {
     // } else {
     //   return true
     // }
-
-
-
-
-
   }
 
   const isResumeDisabled = () => {
-
-
-    if(props.downloadInfo){
-      const status = props.downloadInfo.status;
-      if(status!=='waiting'&&isPauseDisabled()){
-        return false;
+    if (props.downloadInfo) {
+      const { status } = props.downloadInfo
+      if (status !== 'waiting' && isPauseDisabled()) {
+        return false
       }
 
-      return true;
+      return true
     }
 
-    return true;
-
+    return true
 
     // if (props.downloadInfo) {
 
     //   if(props.downloadInfo.status === "waiting"){
     //     return true;
     //   }
-
 
     //   if (props.downloadInfo.downloadInstance) {
     //     if (
@@ -105,38 +86,38 @@ function Course(props) {
   }
 
   return (
-    <Card size="small" loading={isLoading}>
+    <Card size='small' loading={isLoading}>
       <Row>
         <Col span={9}>
           <img src={props.image} alt={props.title} />
         </Col>
-        <Col span={15} style={{ position: "relative" }}>
-          <Row className="mb-3">{props.title}</Row>
+        <Col span={15} style={{ position: 'relative' }}>
+          <Row className='mb-3'>{props.title}</Row>
           {props.downloadInfo ? (
             <span
               style={{
-                display: "inline-block",
-                fontSize: "17px",
-                position: "absolute",
-                top: "-7px",
-                right: "0px",
-                cursor: "pointer",
+                display: 'inline-block',
+                fontSize: '17px',
+                position: 'absolute',
+                top: '-7px',
+                right: '0px',
+                cursor: 'pointer',
               }}
               onClick={() => dispatch(deleteDownload(props.id))}
             >
               &times;
             </span>
           ) : null}
-          <Row gutter={8} align="middle" className="mb-2">
+          <Row gutter={8} align='middle' className='mb-2'>
             <Col>
               <Button
                 onClick={() => props.onDownload(props, setLoading)}
-                shape="circle"
-                className={classNames("flex justify-center border-2", {
-                  "opacity-50": props.downloadInfo,
+                shape='circle'
+                className={classNames('flex justify-center border-2', {
+                  'opacity-50': props.downloadInfo,
                 })}
                 icon={
-                  <CloudDownloadOutlined className="bg-indigo-500 text-white rounded-full leading-zero p-1" />
+                  <CloudDownloadOutlined className='bg-indigo-500 text-white rounded-full leading-zero p-1' />
                 }
                 disabled={props.downloadInfo}
               />
@@ -144,12 +125,12 @@ function Course(props) {
             <Col>
               <Button
                 onClick={() => dispatch(pauseDownload(props.id))}
-                shape="circle"
-                className={classNames("flex justify-center border-2", {
-                  "opacity-50": isPauseDisabled(),
+                shape='circle'
+                className={classNames('flex justify-center border-2', {
+                  'opacity-50': isPauseDisabled(),
                 })}
                 icon={
-                  <PauseOutlined className=" bg-orange-500 text-white rounded-full leading-zero p-1" />
+                  <PauseOutlined className=' bg-orange-500 text-white rounded-full leading-zero p-1' />
                 }
                 disabled={isPauseDisabled()}
               />
@@ -157,12 +138,12 @@ function Course(props) {
             <Col>
               <Button
                 onClick={() => dispatch(resumeDownload(props.id))}
-                shape="circle"
-                className={classNames("flex justify-center border-2", {
-                  "opacity-50": isResumeDisabled(),
+                shape='circle'
+                className={classNames('flex justify-center border-2', {
+                  'opacity-50': isResumeDisabled(),
                 })}
                 icon={
-                  <CaretRightOutlined className=" bg-green-500 text-white rounded-full leading-zero p-1" />
+                  <CaretRightOutlined className=' bg-green-500 text-white rounded-full leading-zero p-1' />
                 }
                 disabled={isResumeDisabled()}
               />
@@ -171,8 +152,11 @@ function Course(props) {
             {props.downloadInfo ? (
               <Col offset={8}>
                 <Progress
-                  type="circle"
-                  percent={(props.downloadInfo.downloaded/props.downloadInfo.total)*100}
+                  type='circle'
+                  percent={
+                    (props.downloadInfo.downloaded / props.downloadInfo.total) *
+                    100
+                  }
                   width={35}
                   showInfo={false}
                   strokeWidth={15}
@@ -182,10 +166,10 @@ function Course(props) {
           </Row>
 
           {props.downloadInfo ? (
-            <Row className="mt-5">
+            <Row className='mt-5'>
               <Progress
                 percent={props.downloadInfo.currentProgress}
-                size="small"
+                size='small'
                 showInfo={false}
               />
             </Row>

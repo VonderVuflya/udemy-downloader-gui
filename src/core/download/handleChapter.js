@@ -1,5 +1,5 @@
-import mkdirp from "mkdirp"
-import downloadHandler from "./downloadHandler"
+import mkdirp from 'mkdirp'
+import downloadHandler from './downloadHandler'
 import {
   NEW_CHAPTER_STARTED,
   UPDATE_COURSE_VISITED_FILES,
@@ -7,7 +7,8 @@ import {
   UPDATE_LECTURE_NUMBER,
   updateChapterName,
   updateCourseVisitedFiles,
-} from "../../ducks/downloads"
+} from '../../ducks/downloads'
+
 export default function handleChapter(dispatch, getState, courseId, item) {
   const course = getState().downloads[courseId]
   if (!course) return
@@ -21,11 +22,10 @@ export default function handleChapter(dispatch, getState, courseId, item) {
   //   courseid: courseId,
   // })
 
-
   console.log('We are here', directory)
   dispatch(updateChapterName(course.id, `${chapterNumber} ${chapterName}`))
 
-  return mkdirp(directory).then((res) => {
+  return mkdirp(directory).then(res => {
     // dispatch({
     //   type: UPDATE_COURSE_VISITED_FILES,
     //   courseid: courseId,
@@ -33,6 +33,5 @@ export default function handleChapter(dispatch, getState, courseId, item) {
     // })
     dispatch(updateCourseVisitedFiles(course.id, visitedFiles))
     downloadHandler(dispatch, getState, courseId)
-    return
   })
 }
