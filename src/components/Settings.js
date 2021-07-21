@@ -1,7 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Card, Button, Switch, Alert, Form, Radio, Select, Empty } from 'antd'
-import fs from 'fs'
-import { remote } from 'electron'
 import {
   FolderOutlined,
   PlaySquareOutlined,
@@ -10,26 +9,23 @@ import {
   FolderOpenOutlined,
 } from '@ant-design/icons'
 
-const { dialog } = remote
-
-const Settings = props => {
-  const {
-    form,
-    onSelectDownloadPath: selectDownloadPath,
-    onUpdateCheckedFields: updateCheckedFields,
-    settingsForm,
-  } = props
+const Settings = ({
+  form,
+  initialValues,
+  onSelectDownloadPath: selectDownloadPath,
+  onUpdateCheckedFields: updateCheckedFields,
+  settingsForm,
+  onSubmit,
+}) => {
   return (
     <>
       <Form
         layout='vertical'
-        form={props.form}
+        form={form}
         name='settings'
         preserve={false}
-        initialValues={props.initialValues}
-        onFinish={values =>
-          props.onSubmit({ ...props.initialValues, ...values })
-        }
+        initialValues={initialValues}
+        onFinish={values => onSubmit({ ...initialValues, ...values })}
       >
         <Form.Item shouldUpdate>
           {() => {
@@ -79,7 +75,8 @@ const Settings = props => {
                           />
                         </Form.Item>
                       </>
-                    ) : settingsForm ? (
+                    ) : null}
+                    {!enabledSettings.includes('download') && settingsForm ? (
                       <Empty
                         imageStyle={{
                           height: 80,
@@ -139,7 +136,9 @@ const Settings = props => {
                           </Select>
                         </Form.Item>
                       </>
-                    ) : settingsForm ? (
+                    ) : null}
+
+                    {!enabledSettings.includes('lecture') && settingsForm ? (
                       <Empty
                         imageStyle={{
                           height: 80,
@@ -211,7 +210,9 @@ const Settings = props => {
                           </Form.Item>
                         ) : null}
                       </>
-                    ) : settingsForm ? (
+                    ) : null}
+
+                    {!enabledSettings.includes('attachment') && settingsForm ? (
                       <Empty
                         imageStyle={{
                           height: 80,
@@ -343,7 +344,9 @@ const Settings = props => {
                           </Form.Item>
                         ) : null}
                       </>
-                    ) : settingsForm ? (
+                    ) : null}
+
+                    {!enabledSettings.includes('subtitle') && settingsForm ? (
                       <Empty
                         imageStyle={{
                           height: 80,
@@ -372,6 +375,27 @@ const Settings = props => {
       </Form>
     </>
   )
+}
+
+// TODO: delete any
+Settings.propTypes = {
+  form: PropTypes.shape({
+    setFieldsValue: PropTypes.func.isRequired,
+    getFieldValue: PropTypes.func.isRequired,
+  }).isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  initialValues: PropTypes.any.isRequired,
+  onSelectDownloadPath: PropTypes.shape({
+    // eslint-disable-next-line react/forbid-prop-types
+    selectDownloadPath: PropTypes.any.isRequired,
+  }).isRequired,
+  onUpdateCheckedFields: PropTypes.shape({
+    // eslint-disable-next-line react/forbid-prop-types
+    updateCheckedFields: PropTypes.any.isRequired,
+  }).isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  settingsForm: PropTypes.any.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 }
 
 export default Settings

@@ -1,6 +1,7 @@
 import React from 'react'
-import { Menu, Layout } from 'antd'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { Menu, Layout } from 'antd'
 import {
   AppstoreOutlined,
   CloudDownloadOutlined,
@@ -8,7 +9,7 @@ import {
   PoweroffOutlined,
 } from '@ant-design/icons'
 
-function Navigation(props) {
+function Navigation({ handleLogout }) {
   return (
     <Layout.Sider collapsed>
       <Menu defaultSelectedKeys={['1']} className='h-full'>
@@ -30,11 +31,15 @@ function Navigation(props) {
           key='4'
           title={null}
           icon={<PoweroffOutlined />}
-          onClick={props.handleLogout}
+          onClick={handleLogout}
         />
       </Menu>
     </Layout.Sider>
   )
+}
+
+Navigation.propTypes = {
+  handleLogout: PropTypes.func.isRequired,
 }
 
 export default Navigation
