@@ -11,8 +11,9 @@ const electronStore = new ElectronStore()
 
 const transform = createTransform(
   // transform state on its way to being serialized and persisted.
-  (inboundState, key) => {
+  inboundState => {
     // console.log(inboundState);
+    // TODO: refactor
     const downloads = JSON.parse(JSON.stringify(inboundState))
     for (const courseid in downloads) {
       downloads[courseid].downloadInstance = null
@@ -20,9 +21,7 @@ const transform = createTransform(
     }
     return downloads
   },
-  (outboundState, key) => {
-    return outboundState
-  },
+  outboundState => outboundState,
   { whitelist: ['downloads'] }
 )
 

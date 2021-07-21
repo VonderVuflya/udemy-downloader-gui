@@ -48,7 +48,6 @@ function Dashboard() {
 
       <Content className='bg-white'>
         <Route path='/dashboard/courses'>
-          {/* <Settings /> */}
           <Courses isLoading={isLoading} />
         </Route>
 

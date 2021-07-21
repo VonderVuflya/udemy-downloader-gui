@@ -1,64 +1,66 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Row, Form, Input, Checkbox, Button } from 'antd'
 
-function LoginForm(props) {
-  return (
-    <Row className='items-center justify-center w-full'>
-      <Form
-        name='basic'
-        className='w-3/5'
-        form={props.form}
-        onFinish={props.onSubmit}
+const LoginForm = ({ form, onSubmit }) => (
+  <Row className='items-center justify-center w-full'>
+    <Form name='basic' className='w-3/5' form={form} onFinish={onSubmit}>
+      <Form.Item
+        name='isBusiness'
+        valuePropName='checked'
+        className='p-1 rounded bg-gray-100 border border-gray-500 text-center'
       >
-        <Form.Item
-          name='isBusiness'
-          valuePropName='checked'
-          className='p-1 rounded bg-gray-100 border border-gray-500 text-center'
+        <Checkbox
+          onChange={event => {
+            form.setFieldsValue({ isBusiness: event.target.checked })
+          }}
         >
-          <Checkbox
-            onChange={event => {
-              props.form.setFieldsValue({ isBusiness: event.target.checked })
-            }}
-          >
-            Udemy Business
-          </Checkbox>
-        </Form.Item>
+          Udemy Business
+        </Checkbox>
+      </Form.Item>
 
-        <Form.Item noStyle shouldUpdate>
-          {() =>
-            props.form.getFieldValue('isBusiness') ? (
-              <Form.Item
-                name='businessName'
-                rules={[
-                  {
-                    required: true,
-                    message: ' ',
-                  },
-                ]}
-              >
-                <Input
-                  className='p-2 pl-4 rounded'
-                  placeholder='Udemy Business Name'
-                />
-              </Form.Item>
-            ) : null
-          }
-        </Form.Item>
+      <Form.Item noStyle shouldUpdate>
+        {() =>
+          form.getFieldValue('isBusiness') ? (
+            <Form.Item
+              name='businessName'
+              rules={[
+                {
+                  required: true,
+                  message: ' ',
+                },
+              ]}
+            >
+              <Input
+                className='p-2 pl-4 rounded'
+                placeholder='Udemy Business Name'
+              />
+            </Form.Item>
+          ) : null
+        }
+      </Form.Item>
 
-        <Form.Item>
-          <Button
-            type='primary'
-            shape='round'
-            className='h-10 tracking-wide'
-            htmlType='submit'
-            block
-          >
-            Login Using Credentials
-          </Button>
-        </Form.Item>
-      </Form>
-    </Row>
-  )
+      <Form.Item>
+        <Button
+          type='primary'
+          shape='round'
+          className='h-10 tracking-wide'
+          htmlType='submit'
+          block
+        >
+          Login Using Credentials
+        </Button>
+      </Form.Item>
+    </Form>
+  </Row>
+)
+
+LoginForm.propTypes = {
+  form: PropTypes.shape({
+    setFieldsValue: PropTypes.func.isRequired,
+    getFieldValue: PropTypes.func.isRequired,
+  }).isRequired,
+  onSubmit: PropTypes.func.isRequired,
 }
 
 export default LoginForm

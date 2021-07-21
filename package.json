@@ -24,6 +24,7 @@
     "mkdirp": "^1.0.4",
     "mt-files-downloader": "https://github.com/FaisalUmair/mt-files-downloader-wrapper.git",
     "node-vtt-to-srt": "^1.0.1",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-icons": "^3.10.0",
@@ -37,7 +38,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.31.0",
+    "eslint": "^6.6.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
@@ -46,7 +47,7 @@
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "^2.3.2",
-    "react-app-rewired": "^2.1.6",
+    "react-app-rewired": "^2.1.8",
     "tailwindcss": "^1.4.6"
   },
   "browserslist": {
