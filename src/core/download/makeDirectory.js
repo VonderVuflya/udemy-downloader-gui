@@ -19,6 +19,7 @@ export default function makeDirectory(getState, dispatch, course, chapterName) {
       courseid: course.id,
       visitedFiles: visitedFiles + 1,
     })
+    // TODO: delete this shit
     return downloadHandler(dispatch, getState, course.id)
   })
 }

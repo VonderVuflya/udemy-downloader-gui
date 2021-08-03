@@ -28,7 +28,6 @@ const Courses = ({ isLoading }) => {
   const [curriculumModal, setCurriculumModal] = useState(false)
   const [curriculum, setCurriculum] = useState([])
   const [treeData, setTreeData] = useState([])
-
   const [checkedKeys, setCheckedKeys] = useState([])
   const [selectedKeys, setSelectedKeys] = useState([])
 

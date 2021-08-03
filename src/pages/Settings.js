@@ -44,8 +44,8 @@ function Settings() {
     form.setFieldsValue({ enabledSettings })
   }
 
-  const handleSubmit = settings => {
-    dispatch(saveSettings(settings))
+  const handleSubmit = newSettings => {
+    dispatch(saveSettings(newSettings))
   }
 
   return (

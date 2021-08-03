@@ -77,6 +77,7 @@ export default async function downloadCaption(
     //   courseid: courseId,
     //   visitedFiles: course.visitedFiles + 1,
     // })
+    // TODO: delete this shit
     return downloadHandler(dispatch, getState, courseId)
   }
 }

@@ -51,6 +51,7 @@ export default async function downloadFile(item, dispatch, getState, courseId) {
     //   visitedFiles: course.visitedFiles + 1,
     // })
     dispatch(updateCourseVisitedFiles(course.id, course.visitedFiles))
+    // TODO: delete this shit
     return downloadHandler(dispatch, getState, courseId)
   }
 }

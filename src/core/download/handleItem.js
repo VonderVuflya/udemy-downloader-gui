@@ -1,33 +1,21 @@
 import {
-  FILE_DOWNLOAD_FINISHED,
-  UPDATE_CHAPTER_NUMBER,
-  UPDATE_COURSE_VISITED_FILES,
-  UPDATE_LECTURE_NUMBER,
-  updateChapterNumber,
+  // FILE_DOWNLOAD_FINISHED,
+  // UPDATE_CHAPTER_NUMBER,
+  // UPDATE_COURSE_VISITED_FILES,
+  // UPDATE_LECTURE_NUMBER,
+  // updateChapterNumber,
   updateLectureNumber,
 } from '../../ducks/downloads'
 import downloadHandler from './downloadHandler'
 import handleChapter from './handleChapter'
-import handleLecture from './handleLecture'
-import handleAsset from './handleAsset'
-import handleCaption from './handleCaption'
 import getDownloadItem from './getDownloadItem'
+import downloadItem from './downloadItem'
 
 export default function handleItem(getState, dispatch, course) {
-  if (!course) return
-  const { curriculum } = course
-  const count = 0
-  // console.log(
-  //   course.downloaded,
-  //   course.total,
-  //   course.visitedFiles
-  //   // getState().downloads
-  // )
-
   const item = getDownloadItem(course)
+  console.log({ item })
 
-  console.log(item)
-
+  // eslint-disable-next-line no-underscore-dangle
   switch (item._class) {
     case 'chapter':
       // dispatch({
@@ -41,15 +29,16 @@ export default function handleItem(getState, dispatch, course) {
       //   lectureNumber: 0,
       // })
       // dispatch(updateChapterNumber(course.id, course.chapterNumber))
-      return handleChapter(dispatch, getState, course.id, item)
+      return handleChapter(dispatch, getState, course, item)
     case 'asset':
-      return handleAsset(dispatch, getState, course.id, item)
+      return downloadItem(dispatch, getState, course, item)
     case 'lecture':
       dispatch(updateLectureNumber(course.id, course.lectureNumber))
-      return handleLecture(dispatch, getState, course.id, item)
+      return downloadItem(dispatch, getState, course, item)
     case 'caption':
       // handle caption here
-      return handleCaption(dispatch, getState, course.id, item)
+      return downloadItem(dispatch, getState, course, item)
   }
-  return downloadHandler(dispatch, getState, course.id)
+  // TODO: delete this shit
+  return downloadHandler(dispatch, getState, course)
 }

@@ -2,16 +2,10 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form } from 'antd'
 import { Redirect } from 'react-router-dom'
-
 import { remote } from 'electron'
+
 import { login } from '../ducks/user'
 import LoginForm from '../components/LoginForm'
-
-import './Login.css'
-
-const { BrowserWindow, getCurrentWindow, session } = remote
-
-const parent = getCurrentWindow()
 
 // const dimensions = parent.getSize()
 
@@ -21,6 +15,8 @@ function LoginPage() {
   const dispatch = useDispatch()
 
   const [form] = Form.useForm()
+  const { BrowserWindow, getCurrentWindow, session } = remote
+  const parent = getCurrentWindow()
 
   const onSubmit = values => {
     const loginWindow = new BrowserWindow({

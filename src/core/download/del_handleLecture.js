@@ -1,8 +1,8 @@
-import downloadHandler from './downloadHandler'
-import {
-  FILE_DOWNLOAD_FINISHED,
-  UPDATE_COURSE_VISITED_FILES,
-} from '../../ducks/downloads'
+// import downloadHandler from './downloadHandler'
+// import {
+//   FILE_DOWNLOAD_FINISHED,
+//   UPDATE_COURSE_VISITED_FILES,
+// } from '../../ducks/downloads'
 import downloadItem from './downloadItem'
 
 export default function handleLecture(dispatch, getState, courseId, item) {

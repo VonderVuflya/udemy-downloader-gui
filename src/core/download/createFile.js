@@ -32,6 +32,7 @@ export default function createFile(
     //   visitedFiles: course.visitedFiles + 1,
     // })
 
+    // TODO: delete this shit
     downloadHandler(dispatch, getState, courseId)
   })
 }

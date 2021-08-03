@@ -88,6 +88,7 @@ export default async function downloadArticle(
     //   courseid: courseId,
     //   visitedFiles: course.visitedFiles + 1,
     // })
+    // TODO: delete this shit
     return downloadHandler(dispatch, getState, courseId)
   }
 }

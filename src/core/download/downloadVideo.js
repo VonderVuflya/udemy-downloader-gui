@@ -92,6 +92,7 @@ export default async function downloadVideo(
     //   visitedFiles: course.visitedFiles + 1,
     // })
     // dispatch(updateCourseVisitedFiles(course.id, course.visitedFiles))
+    // TODO: delete this shit
     // return downloadHandler(dispatch, getState, courseId)
   }
 }

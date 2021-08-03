@@ -6,7 +6,12 @@ const SEARCH_COURSES = 'app/courses/SEARCH_COURSES'
 const COURSES_LOADED = 'app/courses/COURSES_LOADED'
 
 export default function reducer(
-  state = { data: [], search: null, total: 0, pageNumber: 1 },
+  state = {
+    data: [],
+    search: null,
+    total: 0,
+    pageNumber: 1,
+  },
   action
 ) {
   switch (action.type) {

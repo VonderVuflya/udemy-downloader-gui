@@ -1,37 +1,31 @@
 import mkdirp from 'mkdirp'
 import downloadHandler from './downloadHandler'
 import {
-  NEW_CHAPTER_STARTED,
-  UPDATE_COURSE_VISITED_FILES,
-  UPDATE_CHAPTER_NUMBER,
-  UPDATE_LECTURE_NUMBER,
   updateChapterName,
   updateCourseVisitedFiles,
 } from '../../ducks/downloads'
 
-export default function handleChapter(dispatch, getState, courseId, item) {
-  const course = getState().downloads[courseId]
-  if (!course) return
-  const { parentPath, visitedFiles, settings, chapterNumber } = course
-  // console.log(getState().downloads[courseId])
+export default function handleChapter(dispatch, getState, course, item) {
+  const { parentPath, visitedFiles, chapterNumber } = course
   const chapterName = item.title
   const directory = `${parentPath}/${chapterNumber} ${chapterName}`
   // dispatch({
   //   type: NEW_CHAPTER_STARTED,
   //   chapter: chapterName,
-  //   courseid: courseId,
+  //   courseid: course.id,
   // })
 
   console.log('We are here', directory)
   dispatch(updateChapterName(course.id, `${chapterNumber} ${chapterName}`))
 
-  return mkdirp(directory).then(res => {
+  return mkdirp(directory).then(() => {
     // dispatch({
     //   type: UPDATE_COURSE_VISITED_FILES,
-    //   courseid: courseId,
+    //   courseid: course.id,
     //   visitedFiles: visitedFiles + 1,
     // })
     dispatch(updateCourseVisitedFiles(course.id, visitedFiles))
-    downloadHandler(dispatch, getState, courseId)
+    // TODO: delete this shit
+    downloadHandler(dispatch, getState, course.id)
   })
 }

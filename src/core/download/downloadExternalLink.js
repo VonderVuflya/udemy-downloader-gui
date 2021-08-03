@@ -59,6 +59,7 @@ export default async function downloadExternalLink(
     // })
     dispatch(fileDownloadFinished(course.id))
     dispatch(updateCourseVisitedFiles(course.id, course.visitedFiles))
+    // TODO: delete this shit
     return downloadHandler(dispatch, getState, courseId)
   }
 }

@@ -242,6 +242,7 @@ export default function download(
     )
     dispatch(fileDownloadFinished(courseId))
     dispatch(updateCourseVisitedFiles(courseId, course.visitedFiles))
+    // TODO: delete this shit
     downloadHandler(dispatch, getState, courseId)
     clearInterval(interval)
     downloader = null

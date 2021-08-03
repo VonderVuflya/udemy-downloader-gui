@@ -91,6 +91,7 @@ export default async function downloadEBook(
     //   courseid: courseId,
     //   visitedFiles: course.visitedFiles + 1,
     // })
+    // TODO: delete this shit
     return downloadHandler(dispatch, getState, courseId)
   }
 }
