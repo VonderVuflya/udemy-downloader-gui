@@ -2,17 +2,29 @@
   "name": "udeler",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "build:style": "tailwind build src/tailwind.css -o src/index.css",
+    "serve": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "start": "electron .",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject",
+    "lint": "eslint --fix --ext .jsx,.js src/"
+  },
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "antd": "^4.2.2",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
+    "electron": "11.2.0",
     "electron-store": "^5.1.1",
     "mkdirp": "^1.0.4",
     "mt-files-downloader": "https://github.com/FaisalUmair/mt-files-downloader-wrapper.git",
     "node-vtt-to-srt": "^1.0.1",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-icons": "^3.10.0",
@@ -20,20 +32,24 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "redux-persist-electron-storage": "^2.1.0",
     "redux-thunk": "^2.3.0"
   },
-  "scripts": {
-    "build:style": "tailwind build src/tailwind.css -o src/index.css",
-    "serve": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "start": "electron .",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "prettier": "^2.3.2",
+    "react-app-rewired": "^2.1.8",
+    "tailwindcss": "^1.4.6"
   },
   "browserslist": {
     "production": [
@@ -46,10 +62,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "electron": "^11.2.0",
-    "react-app-rewired": "^2.1.6",
-    "tailwindcss": "^1.4.6"
   }
 }

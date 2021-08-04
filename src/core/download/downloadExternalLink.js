@@ -1,5 +1,5 @@
-import createFile from "./createFile"
-import { download } from "."
+import createFile from './createFile'
+import { download } from '.'
 import {
   fileDownloadFinished,
   FILE_DOWNLOAD_FINISHED,
@@ -7,9 +7,9 @@ import {
   updateFileData,
   UPDATE_COURSE_VISITED_FILES,
   UPDATE_FILE_TYPE,
-} from "../../ducks/downloads"
-import downloadHandler from "./downloadHandler"
-import urlFetcher from "./urlFetcher"
+} from '../../ducks/downloads'
+import downloadHandler from './downloadHandler'
+import urlFetcher from './urlFetcher'
 
 function generateContent(url) {
   return `[InternetShortcut]
@@ -24,17 +24,12 @@ export default async function downloadExternalLink(
 ) {
   const course = getState().downloads[courseId]
   if (!course) return
-  const response = await urlFetcher.asset(
-    getState,
-    courseId,
-    item.id,
-    item.lectureId
-  )
+  const response = await urlFetcher.asset(courseId, item.id, item.lectureId)
   if (response) {
     const path = `${course.parentPath}/${course.chapter}`
     const content = generateContent(response.external_url)
     const fileName = `${path}/${course.chapterNumber}.${course.lectureNumber} ${response.filename}.url`
-    console.log(response, "ExternalLink", path)
+    console.log(response, 'ExternalLink', path)
     // dispatch({
     //   type: UPDATE_FILE_TYPE,
     //   courseid: course.id,
@@ -43,10 +38,10 @@ export default async function downloadExternalLink(
     // })
 
     dispatch(
-      updateFileData(course.id, "ExternalLink", `${response.filename}.url`)
+      updateFileData(course.id, 'ExternalLink', `${response.filename}.url`)
     )
     return createFile(content, fileName, getState, dispatch, courseId)
-    //writeFile
+    // writeFile
     console.log(fileName)
     // dispatch({
     //   type: FILE_DOWNLOAD_FINISHED,
@@ -59,6 +54,7 @@ export default async function downloadExternalLink(
     // })
     dispatch(fileDownloadFinished(course.id))
     dispatch(updateCourseVisitedFiles(course.id, course.visitedFiles))
+    // TODO: delete this shit
     return downloadHandler(dispatch, getState, courseId)
   }
 }

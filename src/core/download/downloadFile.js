@@ -1,4 +1,4 @@
-import download from "./download"
+import download from './download'
 import {
   fileDownloadFinished,
   FILE_DOWNLOAD_FINISHED,
@@ -6,23 +6,18 @@ import {
   updateFileData,
   UPDATE_COURSE_VISITED_FILES,
   UPDATE_FILE_TYPE,
-} from "../../ducks/downloads"
-import downloadHandler from "./downloadHandler"
-import urlFetcher from "./urlFetcher"
+} from '../../ducks/downloads'
+import downloadHandler from './downloadHandler'
+import urlFetcher from './urlFetcher'
 
 export default async function downloadFile(item, dispatch, getState, courseId) {
-  const response = await urlFetcher.asset(
-    getState,
-    courseId,
-    item.id,
-    item.lectureId
-  )
+  const response = await urlFetcher.asset(courseId, item.id, item.lectureId)
   console.log(item)
 
   const course = getState().downloads[courseId]
   if (!course) return
   if (response) {
-    const downloadUrl = response.download_urls["File"][0].file
+    const downloadUrl = response.download_urls.File[0].file
     const fileName = `${course.chapterNumber}.${course.lectureNumber} ${response.filename}`
     const path = `${course.parentPath}/${course.chapter}`
 
@@ -33,7 +28,7 @@ export default async function downloadFile(item, dispatch, getState, courseId) {
     //   dlFileName: response.filename,
     // })
 
-    dispatch(updateFileData(course.id, "File", response.filename))
+    dispatch(updateFileData(course.id, 'File', response.filename))
 
     // download(downloadUrl, fileName, path);
     return download(downloadUrl, fileName, path, dispatch, getState, courseId)
@@ -51,6 +46,7 @@ export default async function downloadFile(item, dispatch, getState, courseId) {
     //   visitedFiles: course.visitedFiles + 1,
     // })
     dispatch(updateCourseVisitedFiles(course.id, course.visitedFiles))
+    // TODO: delete this shit
     return downloadHandler(dispatch, getState, courseId)
   }
 }

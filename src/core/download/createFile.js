@@ -3,10 +3,10 @@ import {
   FILE_DOWNLOAD_FINISHED,
   updateCourseVisitedFiles,
   UPDATE_COURSE_VISITED_FILES,
-} from "../../ducks/downloads"
+} from '../../ducks/downloads'
+import downloadHandler from './downloadHandler'
 
-import downloadHandler from "./downloadHandler"
-const fs = require("fs")
+const fs = require('fs')
 
 export default function createFile(
   content,
@@ -16,7 +16,7 @@ export default function createFile(
   courseId
 ) {
   const course = getState().downloads[courseId]
-  return fs.writeFile(fileName, content, (err) => {
+  return fs.writeFile(fileName, content, err => {
     if (err) return console.error(err)
     // console.log("Article Written", fileName)
     // dispatch({
@@ -32,7 +32,7 @@ export default function createFile(
     //   visitedFiles: course.visitedFiles + 1,
     // })
 
+    // TODO: delete this shit
     downloadHandler(dispatch, getState, courseId)
-    return;
   })
 }

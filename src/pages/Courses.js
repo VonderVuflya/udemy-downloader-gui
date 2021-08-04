@@ -1,53 +1,33 @@
-import React, { useEffect, useState } from "react"
+/* eslint-disable camelcase */
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import PropTypes from 'prop-types'
+import { Row, Input, Result, Modal, Form, Tree } from 'antd'
+import { remote } from 'electron'
+import fs from 'fs'
 
-import {
-  Row,
-  Input,
-  Alert,
-  Result,
-  Modal,
-  Button,
-  Form,
-  Radio,
-  Select,
-  Tree,
-} from "antd"
+import Course from '../components/Course'
+import Pagination from '../components/Pagination'
+import DownloadSettings from '../components/Settings'
 
-import Course from "../components/Course"
+import { loadCourses, searchCourses } from '../ducks/courses'
+import { downloadCourse } from '../ducks/downloads'
 
-import Pagination from "../components/Pagination"
-
-import { useDispatch, useSelector } from "react-redux"
-
-import { loadCourses, searchCourses } from "../ducks/courses"
-
-import fs from "fs"
-import { remote } from "electron"
-
-import DownloadSettings from "../components/Settings"
-import { downloadCourse } from "../ducks/downloads"
 const { dialog } = remote
 
-function Courses(props) {
-  const courses = useSelector((state) => state.courses.data)
-
-  const totalCourses = useSelector((state) => state.courses.total)
-
-  const pageNumber = useSelector((state) => state.courses.pageNumber)
-
-  const search = useSelector((state) => state.courses.search)
-
-  const downloads = useSelector((state) => state.downloads)
-
-  const settings = useSelector((state) => state.settings)
+const Courses = ({ isLoading }) => {
+  const courses = useSelector(state => state.courses.data)
+  const totalCourses = useSelector(state => state.courses.total)
+  const pageNumber = useSelector(state => state.courses.pageNumber)
+  const search = useSelector(state => state.courses.search)
+  const downloads = useSelector(state => state.downloads)
+  const settings = useSelector(state => state.settings)
 
   const [courseStateData, setCourseStateData] = useState({})
-
   const [modal, setModal] = useState(false)
   const [curriculumModal, setCurriculumModal] = useState(false)
   const [curriculum, setCurriculum] = useState([])
   const [treeData, setTreeData] = useState([])
-
   const [checkedKeys, setCheckedKeys] = useState([])
   const [selectedKeys, setSelectedKeys] = useState([])
 
@@ -55,82 +35,15 @@ function Courses(props) {
 
   const dispatch = useDispatch()
 
+  const { enabledSettings } = settings
+  const allSettings = ['download', 'lecture', 'attachment', 'subtitle']
+  const missing = allSettings.filter(s => !enabledSettings.includes(s))
+
   useEffect(() => {
     if (!courses.length) {
       dispatch(loadCourses())
     }
-  }, [])
-
-  const Paginate = (props) => {
-    return totalCourses > props.pageSize ? (
-      <Pagination
-        pageSize={props.pageSize}
-        totalCourses={totalCourses}
-        pageNumber={pageNumber}
-        onChange={(pageNumber) =>
-          dispatch(
-            search ? searchCourses(search, pageNumber) : loadCourses(pageNumber)
-          )
-        }
-      />
-    ) : null
-  }
-
-  const selectDownloadPath = () => {
-    const path = dialog.showOpenDialogSync({
-      properties: ["openDirectory"],
-    })
-
-    if (path && path[0]) {
-      fs.access(path[0], fs.R_OK && fs.W_OK, function (err) {
-        if (err) {
-          console.log(err)
-        } else {
-          form.setFieldsValue({ downloadPath: path[0] })
-        }
-      })
-    }
-  }
-
-  const updateCheckedFields = (field, checked) => {
-    const enabledSettings = form.getFieldValue("enabledSettings")
-    const index = enabledSettings.indexOf(field)
-
-    if (checked) {
-      if (index === -1) enabledSettings.push(field)
-    } else {
-      if (index !== -1) enabledSettings.splice(index, 1)
-    }
-
-    form.setFieldsValue({ enabledSettings })
-  }
-
-  const { enabledSettings, lectureOption: downloadPreference } = settings
-  const allSettings = ["download", "lecture", "attachment", "subtitle"]
-
-  const handleDownload = (course, setLoading) => {
-    if (settings.enabledSettings.length < allSettings.length) {
-      setCourseStateData({
-        course: { ...course },
-        setLoading: setLoading,
-      })
-      setModal(true)
-    } else {
-      dispatch(downloadCourse(course, setLoading, settings))
-    }
-  }
-
-  const handleSubmit = (values) => {
-    setModal(false)
-    dispatch(
-      downloadCourse(courseStateData.course, courseStateData.setLoading, {
-        ...settings,
-        ...values,
-      })
-    )
-
-    form.resetFields()
-  }
+  }, [dispatch, courses.length])
 
   useEffect(() => {
     if (
@@ -141,18 +54,19 @@ function Courses(props) {
     } else {
       setCurriculum([])
     }
-  }, [Object.keys(downloads).length])
+  }, [courseStateData, downloads])
 
   useEffect(() => {
     if (!curriculum.length) return
-    let arr = []
+    const arr = []
     let obj = {}
     let key = -1
     console.log(curriculum)
 
-    curriculum.forEach((c) => {
-      if (c._class == "chapter") {
-        key++
+    curriculum.forEach(c => {
+      // eslint-disable-next-line no-underscore-dangle
+      if (c._class === 'chapter') {
+        key += 1
         obj = {
           title: c.title,
           key: c.id,
@@ -169,37 +83,135 @@ function Courses(props) {
     setCurriculumModal(true)
   }, [curriculum])
 
-  const missing = allSettings.filter((s) => {
-    return !enabledSettings.includes(s)
-  })
+  const selectDownloadPath = () => {
+    const path = dialog.showOpenDialogSync({
+      properties: ['openDirectory'],
+    })
 
-  const onCheck = (checkedKeys) => {
-    console.log("onCheck", checkedKeys)
-    setCheckedKeys(checkedKeys)
+    if (path && path[0]) {
+      fs.access(path[0], fs.R_OK && fs.W_OK, err => {
+        if (err) {
+          console.log(err)
+        } else {
+          form.setFieldsValue({ downloadPath: path[0] })
+        }
+      })
+    }
   }
 
-  const onSelect = (selectedKeys, info) => {
-    console.log("onSelect", info)
-    setSelectedKeys(selectedKeys)
+  const updateCheckedFields = (field, checked) => {
+    const enabledSettingsField = form.getFieldValue('enabledSettings')
+    const index = enabledSettingsField.indexOf(field)
+
+    if (checked) {
+      if (index === -1) enabledSettingsField.push(field)
+    } else if (index !== -1) enabledSettingsField.splice(index, 1)
+
+    form.setFieldsValue({ enabledSettings })
   }
+
+  const handleDownload = (course, setLoading) => {
+    if (settings.enabledSettings.length < allSettings.length) {
+      setCourseStateData({
+        course: { ...course },
+        setLoading,
+      })
+      setModal(true)
+    } else {
+      dispatch(downloadCourse(course, setLoading, settings))
+    }
+  }
+
+  const handleSubmit = values => {
+    setModal(false)
+    dispatch(
+      downloadCourse(courseStateData.course, courseStateData.setLoading, {
+        ...settings,
+        ...values,
+      })
+    )
+
+    form.resetFields()
+  }
+
+  const onCheck = check => {
+    console.log('onCheck', check)
+    setCheckedKeys(check)
+  }
+
+  const onSelect = (currentKey, info) => {
+    console.log('onSelect', info)
+    setSelectedKeys(currentKey)
+  }
+
+  const Paginate = ({ pageSize }) => {
+    return totalCourses > pageSize ? (
+      <Pagination
+        pageSize={pageSize}
+        totalCourses={totalCourses}
+        pageNumber={pageNumber}
+        onChange={updatedPageNumber =>
+          dispatch(
+            search
+              ? searchCourses(search, updatedPageNumber)
+              : loadCourses(updatedPageNumber)
+          )
+        }
+      />
+    ) : null
+  }
+
+  Paginate.propTypes = {
+    pageSize: PropTypes.number.isRequired,
+  }
+
   return (
     <>
-      <Row className="p-3">
+      <Row className='p-3'>
         <Input.Search
-          placeholder="Search Courses"
-          size="large"
-          allowClear={true}
+          placeholder='Search Courses'
+          size='large'
+          allowClear
           defaultValue={search}
-          onSearch={(value) => dispatch(searchCourses(value))}
+          onSearch={value => dispatch(searchCourses(value))}
         />
       </Row>
+
+      {courses.length && (
+        <>
+          <Paginate pageSize={20} />
+
+          {courses.map(({ id, image_125_H, title }) => (
+            <Course
+              key={id}
+              id={id}
+              image={image_125_H}
+              title={title}
+              downloadInfo={downloads[id]}
+              onDownload={handleDownload}
+            />
+          ))}
+
+          <Paginate pageSize={20} />
+        </>
+      )}
+      {!courses.length && !isLoading ? (
+        <Row justify='center' className='p-3'>
+          <Result
+            status='404'
+            title='No Courses Found'
+            subTitle='We could not find any courses in your account'
+          />
+        </Row>
+      ) : null}
+
       {modal && (
         <Modal
-          title="Update Settings"
-          visible={true}
+          title='Update Settings'
+          visible
           onCancel={() => setModal(false)}
           footer={[]}
-          destroyOnClose={true}
+          destroyOnClose
         >
           <DownloadSettings
             initialValues={{ ...settings, enabledSettings: [...missing] }}
@@ -213,11 +225,11 @@ function Courses(props) {
 
       {curriculumModal && (
         <Modal
-          title="Download Specific"
-          visible={true}
+          title='Download Specific'
+          visible
           onCancel={() => setCurriculumModal(false)}
           footer={[]}
-          destroyOnClose={true}
+          destroyOnClose
         >
           <Tree
             checkable
@@ -229,34 +241,12 @@ function Courses(props) {
           />
         </Modal>
       )}
-      {courses.length ? (
-        <>
-          <Paginate pageSize={20} />
-
-          {courses.map((course) => (
-            <Course
-              downloadInfo={downloads[course.id]}
-              key={course.id}
-              onDownload={handleDownload}
-              id={course.id}
-              image={course.image_125_H}
-              title={course.title}
-            />
-          ))}
-
-          <Paginate pageSize={20} />
-        </>
-      ) : !props.isLoading ? (
-        <Row justify="center" className="p-3">
-          <Result
-            status="404"
-            title="No Courses Found"
-            subTitle="We could not find any courses in your account"
-          />
-        </Row>
-      ) : null}
     </>
   )
+}
+
+Courses.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
 }
 
 export default Courses

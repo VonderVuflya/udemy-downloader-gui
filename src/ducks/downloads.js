@@ -1,42 +1,31 @@
-import { showLoading, hideLoading } from "./dashboard"
+/* eslint-disable no-underscore-dangle */
+import { showLoading, hideLoading } from './dashboard'
 
-import { getCurriculum, getItemInfo } from "../core/course"
-import downloadHandler from "../core/download/downloadHandler"
+import { getCurriculum } from '../core/course'
+import downloadHandler from '../core/download/downloadHandler'
+// import { download } from '../core/download'
 
-import { download } from "../core/download"
-const captions = []
+// const captions = []
 
-const NEW_COURSE_DOWNLOAD = "app/downloads/NEW_COURSE_DOWNLOAD"
-
-const START_DOWNLOAD = "app/downloads/START_DOWNLOAD"
-
-export const DOWNLOAD_STARTED = "app/downloads/DOWNLOAD_STARTED"
-
-const PAUSE_DOWNLOAD = "app/downloads/PAUSE_DOWNLOAD"
-
-export const DOWNLOAD_PAUSED = "app/downloads/DOWNLOAD_PAUSED"
-
-const RESUME_DOWNLOAD = "app/downloads/RESUME_DOWNLOAD"
-
-export const UPDATE_PROGRESS = "app/downloads/UPDATE_PROGRESS"
-
+const NEW_COURSE_DOWNLOAD = 'app/downloads/NEW_COURSE_DOWNLOAD'
+// const START_DOWNLOAD = 'app/downloads/START_DOWNLOAD'
+export const DOWNLOAD_STARTED = 'app/downloads/DOWNLOAD_STARTED'
+// const PAUSE_DOWNLOAD = 'app/downloads/PAUSE_DOWNLOAD'
+export const DOWNLOAD_PAUSED = 'app/downloads/DOWNLOAD_PAUSED'
+// const RESUME_DOWNLOAD = 'app/downloads/RESUME_DOWNLOAD'
+export const UPDATE_PROGRESS = 'app/downloads/UPDATE_PROGRESS'
 export const UPDATE_COURSE_VISITED_FILES =
-  "app/downloads/UPDATE_COURSE_VISITED_FILES"
-
-export const COURSE_DOWNLOAD_STARTED = "app/downloads/COURSE_DOWNLOAD_STARTED"
-
-export const COURSE_DOWNLOAD_FINISHED = "app/downloads/COURSE_DOWNLOAD_FINISHED"
-
-export const NEW_CHAPTER_STARTED = "app/downloads/NEW_CHAPTER_STARTED"
-
-export const FILE_DOWNLOAD_FINISHED = "app/downloads/FILE_DOWNLOAD_FINISHED"
-
-export const UPDATE_CHAPTER_NUMBER = "app/downloads/UPDATE_CHAPTER_NUMBER"
-export const UPDATE_LECTURE_NUMBER = "app/downloads/UPDATE_LECTURE_NUMBER"
-export const UPDATE_FILE_TYPE = "app/downloads/UPDATE_FILE_TYPE"
-export const UPDATE_VIDEO_QUALITY = "app/downloads/UPDATE_VIDEO_QUALITY"
-export const DELETE_DOWNLOAD = "app/downloads/DELETE_DOWNLOAD"
-export const UPDATE_INFO = "app/downloads/UPDATE_INFO"
+  'app/downloads/UPDATE_COURSE_VISITED_FILES'
+export const COURSE_DOWNLOAD_STARTED = 'app/downloads/COURSE_DOWNLOAD_STARTED'
+export const COURSE_DOWNLOAD_FINISHED = 'app/downloads/COURSE_DOWNLOAD_FINISHED'
+export const NEW_CHAPTER_STARTED = 'app/downloads/NEW_CHAPTER_STARTED'
+export const FILE_DOWNLOAD_FINISHED = 'app/downloads/FILE_DOWNLOAD_FINISHED'
+export const UPDATE_CHAPTER_NUMBER = 'app/downloads/UPDATE_CHAPTER_NUMBER'
+export const UPDATE_LECTURE_NUMBER = 'app/downloads/UPDATE_LECTURE_NUMBER'
+export const UPDATE_FILE_TYPE = 'app/downloads/UPDATE_FILE_TYPE'
+export const UPDATE_VIDEO_QUALITY = 'app/downloads/UPDATE_VIDEO_QUALITY'
+export const DELETE_DOWNLOAD = 'app/downloads/DELETE_DOWNLOAD'
+export const UPDATE_INFO = 'app/downloads/UPDATE_INFO'
 
 export default function reducer(state = {}, action) {
   switch (action.type) {
@@ -46,7 +35,7 @@ export default function reducer(state = {}, action) {
         [action.course.id]: {
           curriculum: action.curriculum,
           ...action.course,
-          status: "downloading",
+          status: 'downloading',
           downloaded: 0,
           total: action.total,
           currentProgress: 0,
@@ -204,48 +193,84 @@ export default function reducer(state = {}, action) {
   }
 }
 
-export function downloadCourse(course, setLoading, settings) {
+export function updateDownloaderProgress(courseId, currentProgress) {
+  return dispatch => {
+    dispatch({
+      type: UPDATE_INFO,
+      courseid: courseId,
+      payload: {
+        currentProgress,
+      },
+    })
+  }
+}
+
+export function updateDownloaderStatus(courseId, status) {
+  return dispatch => {
+    dispatch({
+      type: UPDATE_INFO,
+      courseid: courseId,
+      payload: {
+        status,
+      },
+    })
+  }
+}
+
+export function startDownload(courseid) {
   return (dispatch, getState) => {
+    // dispatch({ type: START_DOWNLOAD, courseid })
+    dispatch(updateDownloaderStatus(courseid, 'waiting'))
+    // download(courseid, dispatch, getState)
+    downloadHandler(dispatch, getState, courseid)
+  }
+}
+
+export function downloadCourse(course, setLoading, settings) {
+  return dispatch => {
     setLoading(true)
     dispatch(showLoading())
-    getCurriculum(getState().user.accessToken, course.id).then((response) => {
-
+    getCurriculum(course.id).then(response => {
       setLoading(false)
       dispatch(hideLoading())
 
       // const allowed = ["Video", "Article", "File", "E-Book", "ExternalLink"]
-      const allowed = [...settings.allowedAttachments, "Video"]
+      const allowed = [...settings.allowedAttachments, 'Video']
 
-      const subtitlesAllowed =
-        settings.subtitleOption === "download" ? true : false
+      const subtitlesAllowed = settings.subtitleOption === 'download'
 
-      const subtitleLanguage = settings.subtitleLanguage
+      const { subtitleLanguage } = settings
 
       let total = 0
 
-      const curriculum = response.data.results.filter((item) => {
-        if (item._class === "chapter") {
+      console.log({ response: response.data.results, allowed })
+
+      const curriculum = response.data.results.filter(item => {
+        if (item._class === 'chapter') {
           return true
-        } else if (
-          item._class === "lecture" &&
+        }
+        if (
+          item._class === 'lecture' &&
           allowed.includes(item.asset.asset_type)
         ) {
-          total++
+          total += 1
+          const result = item
 
-          if (subtitlesAllowed && item.asset.captions.length) {
-            let subtitleFound,
-              autoSubtitleFound = false
+          if (subtitlesAllowed && result.asset.captions.length) {
+            let subtitleFound
+            let autoSubtitleFound = false
             let autoSubtitleIndex = null
 
-            for (var key in item.asset.captions) {
-              if (item.asset.captions[key].video_label === subtitleLanguage) {
+            // TODO: refactor for..in
+            for (const key in result.asset.captions) {
+              if (result.asset.captions[key].video_label === subtitleLanguage) {
                 subtitleFound = true
-                total++
-                item.asset.caption = item.asset.captions[key]
+                total += 1
+                result.asset.caption = result.asset.captions[key]
                 break
               } else if (
-                item.asset.captions[key].video_label
-                  .replace("[Auto]", "")
+                result.asset.captions[key].video_label
+                  .replace('[Auto]', '')
                   .trim() === subtitleLanguage
               ) {
                 autoSubtitleFound = true
@@ -255,36 +280,34 @@ export function downloadCourse(course, setLoading, settings) {
 
             if (!subtitleFound) {
               if (autoSubtitleFound) {
-                total++
-                item.asset.caption = item.asset.captions[autoSubtitleIndex]
+                total += 1
+                result.asset.caption = result.asset.captions[autoSubtitleIndex]
               }
             }
           }
 
-          delete item.asset.captions
+          delete result.asset.captions
 
-          item.supplementary_assets = item.supplementary_assets.filter(
-            (asset) => allowed.includes(asset.asset_type)
+          result.supplementary_assets = result.supplementary_assets.filter(
+            asset => allowed.includes(asset.asset_type)
           )
           total += item.supplementary_assets.length
-          return true
+          return result
         }
 
         return false
       })
-
 
       dispatch({
         type: NEW_COURSE_DOWNLOAD,
         course,
         curriculum,
         total,
-        settings: settings,
+        settings,
       })
-      if (settings.lectureOption == "downloadAll") {
+      if (settings.lectureOption === 'downloadAll') {
         console.log('hit me')
         dispatch(startDownload(course.id))
-        return
       }
     })
   }
@@ -293,7 +316,7 @@ export function downloadCourse(course, setLoading, settings) {
 export function pauseDownload(courseid) {
   return (dispatch, getState) => {
     // dispatch({ type: PAUSE_DOWNLOAD, courseid })
-    dispatch(updateDownloaderStatus(courseid, "waiting"))
+    dispatch(updateDownloaderStatus(courseid, 'waiting'))
     const downloader = getState().downloads[courseid].downloadInstance
     if (downloader) {
       downloader.stop()
@@ -301,37 +324,31 @@ export function pauseDownload(courseid) {
   }
 }
 
-
 export function clearDownloadInstance(courseid) {
-  return (dispatch) => {
-    dispatch({ type: UPDATE_INFO, courseid, payload: {
-      downloadInstance : null
-    } })
+  return dispatch => {
+    dispatch({
+      type: UPDATE_INFO,
+      courseid,
+      payload: {
+        downloadInstance: null,
+      },
+    })
   }
 }
 
 export function resumeDownload(courseid) {
   return (dispatch, getState) => {
     // dispatch({ type: RESUME_DOWNLOAD, courseid })
-    dispatch(updateDownloaderStatus(courseid, "waiting"))
+    dispatch(updateDownloaderStatus(courseid, 'waiting'))
     // dispatch(startDownload(courseid))
     downloadHandler(dispatch, getState, courseid)
   }
 }
 
-export function startDownload(courseid) {
-  return (dispatch, getState) => {
-    // dispatch({ type: START_DOWNLOAD, courseid })
-    dispatch(updateDownloaderStatus(courseid, "waiting"))
-    // download(courseid, dispatch, getState)
-    downloadHandler(dispatch, getState, courseid)
-  }
-}
-
 export function deleteDownload(courseid) {
-  console.log("hit", courseid)
+  console.log('hit', courseid)
   pauseDownload(courseid)
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch({
       type: DELETE_DOWNLOAD,
       courseid,
@@ -340,7 +357,7 @@ export function deleteDownload(courseid) {
 }
 
 export function downloadStarted(courseId, parentPath) {
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch({
       type: UPDATE_INFO,
       courseid: courseId,
@@ -353,7 +370,7 @@ export function downloadStarted(courseId, parentPath) {
 }
 
 export function courseDownloadFinished(courseId) {
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch({
       type: UPDATE_INFO,
       courseid: courseId,
@@ -365,7 +382,7 @@ export function courseDownloadFinished(courseId) {
 }
 
 export function updateChapterNumber(courseId, chapterNumber) {
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch({
       type: UPDATE_INFO,
       courseid: courseId,
@@ -377,20 +394,8 @@ export function updateChapterNumber(courseId, chapterNumber) {
   }
 }
 
-export function updateLectureNumber(courseId, lectureNumber) {
-  return (dispatch, getState) => {
-    dispatch({
-      type: UPDATE_INFO,
-      courseid: courseId,
-      payload: {
-        lectureNumber: lectureNumber + 1,
-      },
-    })
-  }
-}
-
 export function updateChapterName(courseId, chapterName) {
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch({
       type: UPDATE_INFO,
       courseid: courseId,
@@ -401,14 +406,43 @@ export function updateChapterName(courseId, chapterName) {
   }
 }
 
+export function updateLectureNumber(courseId, lectureNumber) {
+  return dispatch => {
+    dispatch({
+      type: UPDATE_INFO,
+      courseid: courseId,
+      payload: {
+        lectureNumber: lectureNumber + 1,
+      },
+    })
+  }
+}
+
 export function updateCourseVisitedFiles(courseId, count) {
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch({
       type: UPDATE_INFO,
       courseid: courseId,
       payload: {
         visitedFiles: count + 1,
       },
+    })
+  }
+}
+
+export function updateFileData(courseId, fileType, filename, quality) {
+  const payloadData = {
+    fileType,
+    dlFileName: filename,
+  }
+
+  const data = quality ? { ...payloadData, videoQuality: quality } : payloadData
+
+  return dispatch => {
+    dispatch({
+      type: UPDATE_INFO,
+      courseid: courseId,
+      payload: data,
     })
   }
 }
@@ -422,62 +456,21 @@ export function fileDownloadFinished(courseId) {
       courseid: courseId,
       payload: {
         downloaded: course.downloaded + 1,
-        status: "waiting",
+        status: 'waiting',
         downloadInstance: null,
       },
     })
   }
 }
 
-export function updateFileData(courseId, fileType, filename, quality) {
-  const payloadData = {
-    fileType: fileType,
-    dlFileName: filename,
-  }
-
-  const data = quality ? { ...payloadData, videoQuality: quality } : payloadData
-
-  return (dispatch, getState) => {
-    dispatch({
-      type: UPDATE_INFO,
-      courseid: courseId,
-      payload: data,
-    })
-  }
-}
-
 export function downloaderStarted(courseId, downloaderInstance) {
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch({
       type: UPDATE_INFO,
       courseid: courseId,
       payload: {
         downloadInstance: downloaderInstance,
-        status: "downloading",
-      },
-    })
-  }
-}
-
-export function updateDownloaderProgress(courseId, currentProgress) {
-  return (dispatch, getState) => {
-    dispatch({
-      type: UPDATE_INFO,
-      courseid: courseId,
-      payload: {
-        currentProgress,
-      },
-    })
-  }
-}
-
-export function updateDownloaderStatus(courseId, status) {
-  return (dispatch, getState) => {
-    dispatch({
-      type: UPDATE_INFO,
-      courseid: courseId,
-      payload: {
-        status: status,
+        status: 'downloading',
       },
     })
   }
