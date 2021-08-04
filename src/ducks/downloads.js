@@ -227,10 +227,10 @@ export function startDownload(courseid) {
 }
 
 export function downloadCourse(course, setLoading, settings) {
-  return (dispatch, getState) => {
+  return dispatch => {
     setLoading(true)
     dispatch(showLoading())
-    getCurriculum(getState().user.accessToken, course.id).then(response => {
+    getCurriculum(course.id).then(response => {
       setLoading(false)
       dispatch(hideLoading())
 

@@ -24,12 +24,7 @@ export default async function downloadExternalLink(
 ) {
   const course = getState().downloads[courseId]
   if (!course) return
-  const response = await urlFetcher.asset(
-    getState,
-    courseId,
-    item.id,
-    item.lectureId
-  )
+  const response = await urlFetcher.asset(courseId, item.id, item.lectureId)
   if (response) {
     const path = `${course.parentPath}/${course.chapter}`
     const content = generateContent(response.external_url)

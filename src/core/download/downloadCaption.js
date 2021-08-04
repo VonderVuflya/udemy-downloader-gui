@@ -20,7 +20,6 @@ export default async function downloadCaption(
   if (!course) return
 
   const response = await urlFetcher.caption(
-    getState,
     courseId,
     // item.id,
     item.lectureId

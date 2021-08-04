@@ -45,14 +45,9 @@ export default async function downloadVideo(
   if (!course) return
   let response
   if (isLecture) {
-    response = await urlFetcher.lecture(getState, courseId, item.id)
+    response = await urlFetcher.lecture(course.id, item.id)
   } else {
-    response = await urlFetcher.asset(
-      getState,
-      courseId,
-      item.id,
-      item.lectureId
-    )
+    response = await urlFetcher.asset(course.id, item.id, item.lectureId)
   }
 
   if (response) {

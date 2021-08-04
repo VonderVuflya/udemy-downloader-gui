@@ -35,14 +35,9 @@ export default async function downloadEBook(
   if (!course) return
   let response
   if (isLecture) {
-    response = await urlFetcher.lecture(getState, courseId, item.id)
+    response = await urlFetcher.lecture(courseId, item.id)
   } else {
-    response = await urlFetcher.asset(
-      getState,
-      courseId,
-      item.id,
-      item.lectureId
-    )
+    response = await urlFetcher.asset(courseId, item.id, item.lectureId)
   }
 
   if (response) {

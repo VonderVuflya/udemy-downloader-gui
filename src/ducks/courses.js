@@ -35,10 +35,10 @@ export default function reducer(
 }
 
 export function loadCourses(pageNumber) {
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch(showLoading())
     dispatch({ type: LOAD_COURSES })
-    getCourses(getState().user.accessToken, pageNumber).then(response => {
+    getCourses(pageNumber).then(response => {
       dispatch(hideLoading())
       dispatch({ type: COURSES_LOADED, courses: response.data, pageNumber })
     })
@@ -46,14 +46,12 @@ export function loadCourses(pageNumber) {
 }
 
 export function searchCourses(search, pageNumber) {
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch(showLoading())
     dispatch({ type: SEARCH_COURSES, search })
-    findCourse(getState().user.accessToken, search, pageNumber).then(
-      response => {
-        dispatch(hideLoading())
-        dispatch({ type: COURSES_LOADED, courses: response.data, pageNumber })
-      }
-    )
+    findCourse(search, pageNumber).then(response => {
+      dispatch(hideLoading())
+      dispatch({ type: COURSES_LOADED, courses: response.data, pageNumber })
+    })
   }
 }

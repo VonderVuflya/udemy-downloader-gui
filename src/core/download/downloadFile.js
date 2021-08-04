@@ -11,12 +11,7 @@ import downloadHandler from './downloadHandler'
 import urlFetcher from './urlFetcher'
 
 export default async function downloadFile(item, dispatch, getState, courseId) {
-  const response = await urlFetcher.asset(
-    getState,
-    courseId,
-    item.id,
-    item.lectureId
-  )
+  const response = await urlFetcher.asset(courseId, item.id, item.lectureId)
   console.log(item)
 
   const course = getState().downloads[courseId]
